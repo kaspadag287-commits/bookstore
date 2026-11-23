@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>متجر الكتب</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f4efe6;
+    --card:#ffffff;
+    --ink:#1f2430;
+    --muted:#6b7280;
+    --line:#e9e2d6;
+    --radius:18px;
+    --shadow:0 10px 30px rgba(31,36,48,.07);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Cairo',system-ui,-apple-system,sans-serif;
+    background:
+      radial-gradient(1200px 600px at 100% -10%, #fde9d1 0%, transparent 55%),
+      radial-gradient(1000px 500px at -10% 10%, #e6f0ff 0%, transparent 50%),
+      var(--bg);
+    color:var(--ink);
+    line-height:1.7;
+    min-height:100vh;
+  }
+
+  /* ===== Header ===== */
+  header.hero{
+    padding:48px 24px 28px;
+    text-align:center;
+  }
+  .badge{
+    display:inline-block;
+    background:#1f2430;
+    color:#fff;
+    font-size:.8rem;
+    font-weight:600;
+    padding:6px 16px;
+    border-radius:999px;
+    letter-spacing:.5px;
+    margin-bottom:16px;
+  }
+  header.hero h1{
+    margin:0 0 10px;
+    font-size:clamp(1.8rem,4vw,2.8rem);
+    font-weight:800;
+    letter-spacing:-.5px;
+  }
+  header.hero p{
+    margin:0 auto;
+    max-width:680px;
+    color:var(--muted);
+    font-size:1.02rem;
+  }
+
+  /* ===== Stats ===== */
+  .stats{
+    display:flex;
+    justify-content:center;
+    gap:14px;
+    flex-wrap:wrap;
+    margin:26px auto 0;
+    max-width:900px;
+  }
+  .stat{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:10px 22px;
+    box-shadow:var(--shadow);
+    text-align:center;
+    min-width:130px;
+  }
+  .stat b{display:block;font-size:1.4rem;font-weight:800;}
+  .stat span{font-size:.8rem;color:var(--muted);font-weight:600;}
+
+  /* ===== Search ===== */
+  .search-wrap{
+    max-width:640px;
+    margin:26px auto 0;
+    padding:0 24px;
+  }
+  .search-wrap input{
+    width:100%;
+    padding:14px 20px;
+    font-family:inherit;
+    font-size:1rem;
+    border:1px solid var(--line);
+    border-radius:999px;
+    background:var(--card);
+    box-shadow:var(--shadow);
+    outline:none;
+    transition:.2s;
+  }
+  .search-wrap input:focus{
+    border-color:#c9b79a;
+    box-shadow:0 0 0 4px rgba(201,183,154,.18);
+  }
+
+  /* ===== Nav pills ===== */
+  nav.toc{
+    max-width:1180px;
+    margin:24px auto 0;
+    padding:0 24px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    justify-content:center;
+  }
+  nav.toc a{
+    text-decoration:none;
+    font-size:.82rem;
+    font-weight:600;
+    color:var(--ink);
+    background:var(--card);
+    border:1px solid var(--line);
+    padding:6px 14px;
+    border-radius:999px;
+    transition:.2s;
+  }
+  nav.toc a:hover{background:#1f2430;color:#fff;border-color:#1f2430;}
+
+  /* ===== Layout ===== */
+  main{
+    max-width:1180px;
+    margin:0 auto;
+    padding:38px 24px 80px;
+    display:grid;
+    gap:26px;
+  }
+
+  /* ===== Category card ===== */
+  .category{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    overflow:hidden;
+    scroll-margin-top:20px;
+  }
+  .cat-head{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:18px 24px;
+    border-bottom:1px solid var(--line);
+    background:linear-gradient(180deg,#fff, #fbf7f0);
+  }
+  .dot{
+    width:12px;height:12px;border-radius:50%;
+    flex-shrink:0;
+  }
+  .cat-head h2{
+    margin:0;
+    font-size:1.15rem;
+    font-weight:800;
+    flex:1;
+  }
+  .count{
+    font-size:.78rem;
+    font-weight:700;
+    color:#fff;
+    background:#1f2430;
+    padding:3px 12px;
+    border-radius:999px;
+  }
+
+  .books{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    padding:20px 24px 24px;
+  }
+  .book{
+    font-size:.88rem;
+    font-weight:500;
+    padding:7px 14px;
+    border-radius:10px;
+    background:#f8f4ec;
+    border:1px solid #efe7d9;
+    color:#3a3a3a;
+    transition:.18s;
+  }
+  .book:hover{
+    background:#1f2430;
+    color:#fff;
+    border-color:#1f2430;
+    transform:translateY(-2px);
+  }
+
+  /* ===== Per-category accent colors ===== */
+  .c-self .dot{background:#6366f1;}
+  .c-novel .dot{background:#ec4899;}
+  .c-poetry .dot{background:#f59e0b;}
+  .c-philo .dot{background:#8b5cf6;}
+  .c-history .dot{background:#a16207;}
+  .c-religion .dot{background:#059669;}
+  .c-business .dot{background:#0ea5e9;}
+  .c-education .dot{background:#ef4444;}
+  .c-kids .dot{background:#f97316;}
+  .c-health .dot{background:#14b8a6;}
+  .c-politics .dot{background:#64748b;}
+  .c-bio .dot{background:#d946ef;}
+
+  footer{
+    text-align:center;
+    padding:0 24px 50px;
+    color:var(--muted);
+    font-size:.85rem;
+  }
+
+  @media(max-width:600px){
+    .cat-head{padding:14px 18px;}
+    .books{padding:16px 18px 20px;}
+    .book{font-size:.82rem;}
+  }
+
+  /* ===== Book covers ===== */
+  .book.has-cover{
+    display:flex;flex-direction:column;align-items:center;gap:8px;
+    width:128px;padding:8px 8px 10px;text-align:center;cursor:zoom-in;
+  }
+  .book.has-cover img{
+    width:100%;aspect-ratio:2/3;object-fit:cover;border-radius:6px;
+    box-shadow:0 4px 12px rgba(0,0,0,.18);background:#eee;
+  }
+  .book.has-cover em{font-style:normal;font-size:.78rem;line-height:1.4;font-weight:600;}
+  .lightbox{position:fixed;inset:0;background:rgba(15,18,25,.85);display:none;
+    align-items:center;justify-content:center;z-index:99;cursor:zoom-out;padding:24px;}
+  .lightbox.open{display:flex;}
+  .lightbox img{max-width:100%;max-height:100%;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.5);}
+
+  /* إخفاء شريط التمرير الجانبي (التمرير يعمل كالمعتاد) */
+  html,body{scrollbar-width:none;-ms-overflow-style:none;}
+  html::-webkit-scrollbar,body::-webkit-scrollbar,*::-webkit-scrollbar{display:none;width:0;height:0;}
+
+  /* ===== Store ===== */
+  .book{cursor:pointer;user-select:none;}
+  .book.has-cover{cursor:pointer;}
+  .cart-fab{position:fixed;top:16px;left:16px;z-index:50;display:flex;align-items:center;gap:8px;
+    background:#1f2430;color:#fff;border:0;border-radius:999px;padding:10px 18px;font:700 .9rem Cairo,sans-serif;
+    cursor:pointer;box-shadow:0 8px 24px rgba(31,36,48,.3);}
+  .cart-fab b{background:#f59e0b;color:#1f2430;border-radius:999px;min-width:22px;height:22px;display:inline-flex;
+    align-items:center;justify-content:center;font-size:.78rem;padding:0 6px;}
+  .btn{font:700 .95rem Cairo,sans-serif;border:0;border-radius:12px;padding:12px 20px;cursor:pointer;background:#1f2430;color:#fff;transition:.15s;}
+  .btn:hover{transform:translateY(-1px);opacity:.92;}
+  .btn.ghost{background:#f8f4ec;color:#1f2430;border:1px solid var(--line);}
+  .modal{position:fixed;inset:0;background:rgba(15,18,25,.6);display:none;align-items:center;justify-content:center;z-index:90;padding:20px;}
+  .modal.open{display:flex;}
+  .sheet{background:#fff;border-radius:20px;max-width:640px;width:100%;display:flex;gap:20px;padding:22px;position:relative;
+    box-shadow:0 30px 80px rgba(0,0,0,.35);max-height:92vh;overflow:auto;}
+  .sheet .x{position:absolute;top:10px;left:12px;border:0;background:none;font-size:1.6rem;cursor:pointer;color:var(--muted);}
+  .m-cover{width:170px;flex-shrink:0;aspect-ratio:2/3;border-radius:10px;overflow:hidden;background:#f0e9db;display:flex;
+    align-items:center;justify-content:center;font-size:3rem;box-shadow:0 6px 18px rgba(0,0,0,.2);}
+  .m-cover img{width:100%;height:100%;object-fit:cover;}
+  .m-info{display:flex;flex-direction:column;gap:10px;justify-content:center;flex:1;}
+  .m-info h3{margin:0;font-size:1.25rem;font-weight:800;line-height:1.5;}
+  .m-cat{margin:0;color:var(--muted);font-size:.85rem;}
+  .m-desc{margin:0;font-size:.9rem;line-height:1.85;color:#3b3f4a;}
+    .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);background:#059669;color:#fff;
+    padding:10px 22px;border-radius:999px;font-weight:700;opacity:0;pointer-events:none;transition:.25s;z-index:100;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  #cart-view{max-width:820px;margin:0 auto;padding:40px 20px 80px;}
+  #cart-view[hidden]{display:none;}
+  .cart-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px;flex-wrap:wrap;}
+  .cart-top h2{margin:0;font-size:1.6rem;font-weight:800;}
+  .cart-row{display:flex;align-items:center;gap:14px;background:#fff;border:1px solid var(--line);border-radius:14px;
+    padding:10px 14px;margin-bottom:10px;box-shadow:var(--shadow);}
+  .cart-row .th{width:52px;aspect-ratio:2/3;border-radius:6px;overflow:hidden;background:#f0e9db;display:flex;align-items:center;
+    justify-content:center;flex-shrink:0;}
+  .cart-row .th img{width:100%;height:100%;object-fit:cover;}
+  .cart-row .t{flex:1;min-width:0;}
+  .cart-row .t b{display:block;font-size:.98rem;}
+  .cart-row .t span{font-size:.78rem;color:var(--muted);}
+  .qty{display:flex;align-items:center;gap:8px;}
+  .qty button{width:30px;height:30px;border-radius:50%;border:1px solid var(--line);background:#f8f4ec;font-size:1.05rem;cursor:pointer;}
+  .rm{border:0;background:none;color:#dc2626;font:700 .82rem Cairo,sans-serif;cursor:pointer;}
+  .cart-sum{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:18px;font-weight:800;flex-wrap:wrap;}
+  .empty{text-align:center;color:var(--muted);padding:50px 0;}
+  @media(max-width:520px){.sheet{flex-direction:column;align-items:center;text-align:center}.m-cover{width:150px}}
+  .ig-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;border:0;border-radius:999px;padding:14px 22px;
+    color:#fff;font:700 1rem Cairo,sans-serif;cursor:pointer;
+    background:linear-gradient(45deg,#f09433 0%,#e6683c 25%,#dc2743 52%,#cc2366 76%,#bc1888 100%);
+    box-shadow:0 8px 22px rgba(220,39,67,.26);transition:transform .15s,box-shadow .15s;}
+  .ig-btn:hover{transform:translateY(-1px);box-shadow:0 12px 26px rgba(220,39,67,.34);}
+  .ig-btn:active{transform:scale(.98);}
+  .ig-btn svg{width:22px;height:22px;flex-shrink:0;}
+  .wa-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;margin-top:10px;border:0;border-radius:999px;padding:14px 22px;
+    color:#fff;font:700 1rem Cairo,sans-serif;cursor:pointer;
+    background:linear-gradient(135deg,#2fd573 0%,#25D366 45%,#128C7E 100%);
+    box-shadow:0 8px 22px rgba(18,140,126,.26);transition:transform .15s,box-shadow .15s;}
+  .wa-btn:hover{transform:translateY(-1px);box-shadow:0 12px 26px rgba(18,140,126,.34);}
+  .wa-btn:active{transform:scale(.98);}
+  .wa-btn svg{width:23px;height:23px;flex-shrink:0;fill:#fff;}
+  #contact{margin-top:26px;}
+  #contact small{display:block;text-align:center;color:var(--muted);margin:10px 0 8px;font-size:.82rem;}
+  #ig-account{text-align:center;margin:14px 0 8px;padding:26px 18px 20px;border-radius:24px;background:#fff;
+    border:1px solid #efe9de;box-shadow:0 14px 34px rgba(31,36,48,.07);animation:igIn .35s ease;}
+  @keyframes igIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .ig-ring{width:96px;height:96px;margin:0 auto 14px;border-radius:50%;padding:3px;
+    background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);}
+  .ig-ring i{display:flex;align-items:center;justify-content:center;width:100%;height:100%;border-radius:50%;
+    background:#fff;border:3px solid #fff;overflow:hidden;font-style:normal;}
+  .ig-ring i img{width:100%;height:100%;object-fit:cover;display:block;}
+  .ig-ring svg{width:38px;height:38px;}
+  .ig-name{font-weight:800;font-size:1.15rem;color:#262626;line-height:1.3;margin-bottom:2px;}
+  #ig-account a.ig-handle{display:block;direction:ltr;text-decoration:none;font-weight:600;font-size:.95rem;color:#8e8e8e;margin-bottom:2px;}
+  #ig-account a.ig-handle:hover{color:#bc1888;}
+  .ig-stats{display:flex;justify-content:center;margin:16px auto 4px;max-width:320px;border-top:1px solid #f0f0f0;border-bottom:1px solid #f0f0f0;}
+  .ig-stats div{flex:1;padding:12px 4px;}
+  .ig-stats div+div{border-right:1px solid #f0f0f0;}
+  .ig-stats b{display:block;direction:ltr;font-size:1.15rem;font-weight:800;color:#262626;line-height:1.2;}
+  .ig-stats em{display:block;font-style:normal;font-size:.76rem;color:#8e8e8e;margin-top:2px;}
+  .ig-bio{margin:12px auto 0;max-width:340px;font-size:.88rem;color:#444;white-space:pre-line;line-height:1.7;}
+  #ig-account a.ig-open{display:inline-flex;align-items:center;gap:8px;margin-top:16px;padding:10px 26px;border-radius:999px;
+    text-decoration:none;color:#fff;font-weight:700;font-size:.92rem;
+    background:linear-gradient(45deg,#f09433,#dc2743,#bc1888);box-shadow:0 6px 16px rgba(220,39,67,.25);transition:transform .15s;}
+  #ig-account a.ig-open:hover{transform:translateY(-1px);}
+  #ig-account a.ig-open svg{width:18px;height:18px;}
+  #ig-account span{display:block;margin-top:12px;font-size:.76rem;color:var(--muted);}
+  #order-text{width:100%;min-height:120px;border:1px solid var(--line);border-radius:12px;padding:10px 12px;
+    font:500 .85rem Cairo,sans-serif;background:#fff;color:var(--ink);resize:vertical;}
+
+  /* ===== Welcome ===== */
+  .welcome{max-width:680px;margin:18px auto 0;padding:20px 24px;background:#fff;border:1px solid var(--line);border-radius:20px;
+    box-shadow:var(--shadow);text-align:center;}
+  .welcome h2{margin:0 0 8px;font-size:1.25rem;font-weight:800;}
+  header.hero .welcome p{margin:6px auto;font-size:.98rem;color:var(--ink);max-width:none;}
+  header.hero .welcome p.price-note{display:inline-block;background:#fff4dc;border:1px solid #f6d58a;border-radius:999px;padding:6px 18px;font-weight:700;}
+  .welcome b{font-weight:800;}
+
+  /* ===== Compatibility & responsive ===== */
+  html{-webkit-text-size-adjust:100%;text-size-adjust:100%;}
+  button,.book,a{-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+  .modal,.lightbox{top:0;right:0;bottom:0;left:0;}
+  .cart-fab{top:calc(16px + env(safe-area-inset-top,0px));}
+  img{max-width:100%;}
+  @media(min-width:601px) and (max-width:1024px){
+    .books{gap:10px;padding:18px 20px 22px;}
+    .book.has-cover{width:118px;}
+  }
+  @media(max-width:600px){
+    header.hero{padding:70px 14px 18px;}
+    .welcome{padding:16px 14px;border-radius:16px;}
+    .welcome h2{font-size:1.08rem;}
+    header.hero .welcome p{font-size:.88rem;}
+    .stats{gap:8px;} .stat{min-width:0;flex:1;padding:8px 10px;}
+    .search-wrap{padding:0 14px;} .search-wrap input{font-size:16px;padding:12px 16px;}
+    nav.toc{padding:0 12px;gap:6px;} nav.toc a{font-size:.74rem;padding:5px 10px;}
+    main{padding-left:10px;padding-right:10px;}
+    .cat-head{padding:12px 14px;} .cat-head h2{font-size:1rem;}
+    /* 4 كتب في كل صف على الهاتف */
+    .books{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;padding:12px 10px 16px;}
+    .book,.book.has-cover{width:auto;min-width:0;padding:4px;border-radius:8px;font-size:.66rem;line-height:1.35;}
+    .book:hover{transform:none;}
+    .book.has-cover{gap:4px;}
+    .book.has-cover em{font-size:.62rem;line-height:1.3;overflow-wrap:anywhere;}
+    .book:not(.has-cover){display:flex;align-items:center;justify-content:center;text-align:center;aspect-ratio:2/3;overflow:hidden;overflow-wrap:anywhere;}
+    .cart-fab{left:10px;padding:8px 14px;font-size:.82rem;}
+    #cart-view{padding:64px 12px 60px;}
+    .cart-top h2{font-size:1.25rem;}
+    .cart-row{flex-wrap:wrap;gap:10px;padding:10px;}
+    .cart-row .t{flex-basis:calc(100% - 80px);}
+    .modal{padding:12px;align-items:flex-end;}
+    .sheet{padding:18px;gap:14px;}
+    .toast{width:max-content;max-width:90vw;text-align:center;}
+  }
+  @media(max-width:340px){ .books{grid-template-columns:repeat(3,minmax(0,1fr));} }
+.m-price{font-weight:800;color:#b45309;margin:4px 0 8px;font-size:1.05rem;}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <span class="badge">متجر الكتب</span>
+  <h1>متجر الكتب</h1>
+  <div class="welcome">
+    <h2>👋 أهلًا وسهلًا بكم في متجر الكتب</h2>
+    <p>يسعدنا زيارتكم، تصفّحوا الكتب واضغطوا على أي كتاب لإضافته إلى السلة.</p>
+    <p class="price-note">💶 معظم الكتب ثمنها <b>10 يورو</b> وبعضها أكثر.</p>
+    <p>بعد إضافة الكتب التي تريدها إلى السلة، تواصل مع البائع عبر إنستجرام ليوضّح لك <b>الأسعار</b> و<b>طرق الدفع</b> و<b>طرق الشحن</b>.</p>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><b id="total-books">0</b><span>كتاب</span></div>
+    <div class="stat"><b id="total-cats">0</b><span>تصنيف</span></div>
+  </div>
+
+  <div class="search-wrap">
+    <input id="search" type="text" placeholder="🔍 ابحث عن كتاب..." autocomplete="off">
+  </div>
+</header>
+
+<nav class="toc" id="toc"></nav>
+
+<main id="catalog"><p class="loading" style="text-align:center;padding:40px;color:#6b7280">جارٍ تحميل الكتب…</p></main>
+
+<footer>
+  متجر الكتب
+</footer>
+
+
+<button class="cart-fab" id="cart-fab" aria-label="السلة">🛒 السلة <b id="cart-count">0</b></button>
+
+<div class="modal" id="modal"><div class="sheet" role="dialog" aria-modal="true">
+  <button class="x" id="m-close" aria-label="إغلاق">×</button>
+  <div class="m-cover" id="m-cover"></div>
+  <div class="m-info">
+    <h3 id="m-title"></h3><p class="m-cat" id="m-cat"></p>
+    <p class="m-price" id="m-price" hidden></p>
+    <p class="m-desc" id="m-desc" hidden></p>
+    <button class="btn" id="m-add">🛒 أضف إلى السلة</button>
+    <button class="btn ghost" id="m-go" style="display:none">عرض السلة</button>
+  </div>
+</div></div>
+
+<section id="cart-view" hidden>
+  <div class="cart-top"><h2>🛒 سلة المشتريات</h2><button class="btn ghost" id="back">← العودة للمتجر</button></div>
+  <div id="cart-list"></div>
+  <div class="cart-sum" id="cart-sum"></div>
+  <div id="contact" style="display:none">
+    <button class="ig-btn" id="ig-btn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5.2"/><circle cx="12" cy="12" r="4.1"/><circle cx="17.4" cy="6.6" r="1.1" fill="#fff" stroke="none"/></svg>
+      تواصل عبر إنستجرام
+    </button>
+    <button class="wa-btn" id="wa-btn">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+      تواصل عبر واتساب
+    </button>
+    <small>واتساب: يفتح المحادثة مع قائمة طلبك جاهزة، فقط اضغط إرسال. إنستجرام: ينسخ قائمة طلبك ويُظهر حساب البائع لترسلها له.</small>
+    <div id="ig-account" style="display:none">
+      <div class="ig-ring"><i id="ig-photo"><svg viewBox="0 0 24 24" fill="none" stroke="#c13584" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5.2"/><circle cx="12" cy="12" r="4.1"/><circle cx="17.4" cy="6.6" r="1.1" fill="#c13584" stroke="none"/></svg></i></div>
+      <div class="ig-name" id="ig-name" hidden></div>
+      <a class="ig-handle" href="https://www.instagram.com/iman__alali" target="_blank" rel="noopener">@iman__alali</a>
+      <div class="ig-stats" id="ig-stats" hidden></div>
+      <p class="ig-bio" id="ig-bio" hidden></p>
+      <a class="ig-open" href="https://www.instagram.com/iman__alali" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5.2"/><circle cx="12" cy="12" r="4.1"/><circle cx="17.4" cy="6.6" r="1.1" fill="#fff" stroke="none"/></svg> فتح الحساب على إنستجرام</a>
+      <span>حساب البائع على إنستجرام</span>
+    </div>
+    <textarea id="order-text" readonly></textarea>
+  </div>
+</section>
+<div class="toast" id="toast">تمت الإضافة إلى السلة ✓</div>
+
+<script>
+function initStore(){
+  // عدّ الكتب داخل كل تصنيف
+  const categories = document.querySelectorAll('.category');
+  let totalBooks = 0;
+
+  categories.forEach(cat => {
+    const books = cat.querySelectorAll('.book');
+    cat.querySelector('.count').textContent = books.length;
+    totalBooks += books.length;
+  });
+
+  document.getElementById('total-books').textContent = totalBooks;
+  document.getElementById('total-cats').textContent = categories.length;
+
+  // البحث الفوري
+  const search = document.getElementById('search');
+  search.addEventListener('input', () => {
+    const q = search.value.trim();
+    categories.forEach(cat => {
+      let visible = 0;
+      cat.querySelectorAll('.book').forEach(b => {
+        const match = !q || b.textContent.includes(q);
+        b.style.display = match ? '' : 'none';
+        if (match) visible++;
+      });
+      cat.style.display = visible ? '' : 'none';
+    });
+  });
+
+  // تكبير الغلاف عند الضغط
+  const lb=document.createElement('div');lb.className='lightbox';
+  lb.innerHTML='<img alt="">';document.body.appendChild(lb);
+  lb.addEventListener('click',()=>lb.classList.remove('open'));
+
+  // ===== المتجر والسلة =====
+  (function(){
+    const $=id=>document.getElementById(id);
+    const books={};
+    document.querySelectorAll('.book').forEach(el=>{
+      const title=(el.querySelector('em')||el).textContent.trim();
+      const img=el.querySelector('img');
+      if(!books[title]) books[title]={cat:el.closest('.category').querySelector('h2').textContent.trim(),src:img?img.src:'',price:el.dataset.price||''};
+      el.addEventListener('click',()=>openModal(title));
+    });
+    let cart={};
+    try{cart=JSON.parse(localStorage.getItem('cart')||'{}')||{};}catch(e){}
+    for(const k in cart) if(!books[k]) delete cart[k];
+    const save=()=>{try{localStorage.setItem('cart',JSON.stringify(cart));}catch(e){} };
+    const total=()=>Object.values(cart).reduce((a,b)=>a+b,0);
+    const fmtPrice=p=>{p=String(p||'').trim(); return !p?'':(/^[\d.,]+$/.test(p)?p.replace(',','.')+' €':p);};
+    const num=p=>{const n=parseFloat(String(p||'').replace(',','.')); return isNaN(n)?null:n;};
+    const totalPrice=()=>{let s=0; for(const t of Object.keys(cart)){const n=num(books[t].price); if(n===null) return null; s+=n*cart[t];} return s;};
+    const money=n=>(Math.round(n*100)/100)+' €';
+    const cover=(t,cls)=>books[t].src?'<img src="'+books[t].src+'" alt="" onerror="this.replaceWith(document.createTextNode(\'📘\'))">':'📘';
+    let cur=null,toastT;
+    function updateCount(){ $('cart-count').textContent=total(); }
+    function openModal(t){
+      cur=t; $('m-title').textContent=t; $('m-cat').textContent=books[t].cat; $('m-cover').innerHTML=cover(t); {const mp=$('m-price'),pr=fmtPrice(books[t].price); mp.textContent=pr; mp.hidden=!pr;}
+      refreshModal(); $('modal').classList.add('open');
+    }
+    function refreshModal(){
+      const inCart=cart[cur];
+      $('m-add').textContent=inCart?'✓ في السلة — أضف نسخة أخرى':'🛒 أضف إلى السلة';
+      $('m-go').style.display=inCart?'':'none';
+    }
+    const closeModal=()=>$('modal').classList.remove('open');
+    $('m-close').onclick=closeModal;
+    $('modal').addEventListener('click',e=>{if(e.target.id==='modal')closeModal();});
+    document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+    $('m-add').onclick=()=>{
+      cart[cur]=(cart[cur]||0)+1; save(); updateCount(); refreshModal();
+      const t=$('toast'); t.textContent='تمت الإضافة إلى السلة ✓'; t.classList.add('show'); clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),1400);
+    };
+    $('m-go').onclick=()=>{closeModal();goCart();};
+    $('cart-fab').onclick=goCart;
+    let viaApp=false,lastY=0;
+    function goCart(){ viaApp=true; lastY=window.scrollY; location.hash='cart'; }
+    $('back').onclick=()=>{ if(viaApp){viaApp=false;history.back();} else {location.hash='';} };
+    function renderCart(){
+      const list=$('cart-list'),sum=$('cart-sum'),keys=Object.keys(cart);
+      $('contact').style.display=keys.length?'':'none';
+      $('order-text').value='السلام عليكم، أرغب بطلب الكتب التالية:\n'+keys.map((t,i)=>(i+1)+'. '+t+(cart[t]>1?' (×'+cart[t]+')':'')+(books[t].price?' — '+fmtPrice(books[t].price):'')).join('\n')+'\n\nإجمالي الكتب: '+total()+(keys.length&&totalPrice()!==null?'\nمجموع أسعار الكتب: '+money(totalPrice()):'');
+      if(!keys.length){
+        list.innerHTML='<div class="empty">السلة فارغة 🛒<br>أضف بعض الكتب من المتجر.</div>'; sum.innerHTML=''; return;
+      }
+      list.innerHTML=keys.map(t=>'<div class="cart-row"><div class="th">'+cover(t)+'</div><div class="t"><b></b><span></span></div>'+
+        '<div class="qty"><button data-a="-" data-t="">−</button><span>'+cart[t]+'</span><button data-a="+" data-t="">+</button></div>'+
+        '<button class="rm" data-a="x" data-t="">حذف</button></div>').join('');
+      list.querySelectorAll('.cart-row').forEach((row,i)=>{
+        const t=keys[i]; row.querySelector('b').textContent=t; row.querySelector('.t span').textContent=books[t].cat+(books[t].price?' • '+fmtPrice(books[t].price):'');
+        row.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>{
+          const a=b.dataset.a;
+          if(a==='+')cart[t]++; else if(a==='-'){cart[t]--; if(cart[t]<1)delete cart[t];} else delete cart[t];
+          save(); updateCount(); renderCart();
+        });
+      });
+      sum.innerHTML='<span>عدد الكتب: '+total()+' ('+keys.length+' عنوان)'+(totalPrice()!==null?' — مجموع الأسعار: '+money(totalPrice()):'')+'</span><button class="btn ghost" id="clear">إفراغ السلة</button>';
+      $('clear').onclick=()=>{cart={};save();updateCount();renderCart();};
+    }
+    $('ig-btn').onclick=()=>{
+      const ta=$('order-text'),msg=ta.value;
+      try{ if(navigator.clipboard&&window.isSecureContext) navigator.clipboard.writeText(msg); else {ta.select();document.execCommand('copy');} }
+      catch(e){ ta.select(); try{document.execCommand('copy');}catch(_){} }
+      $('ig-account').style.display='block';
+      const t=$('toast'); t.textContent='تم نسخ الطلب ✓ — أرسله للبائع على إنستجرام'; t.classList.add('show');
+      clearTimeout(toastT); toastT=setTimeout(()=>t.classList.remove('show'),2600);
+    };
+    const store=[document.querySelector('header.hero'),document.querySelector('nav.toc'),document.querySelector('main'),document.querySelector('footer')];
+    function route(){
+      const isCart=location.hash==='#cart';
+      closeModal();
+      store.forEach(el=>el&&(el.style.display=isCart?'none':''));
+      $('cart-fab').style.display=isCart?'none':'';
+      $('cart-view').hidden=!isCart;
+      if(isCart){renderCart();window.scrollTo(0,0);} else if(lastY){window.scrollTo(0,lastY);}
+    }
+    window.addEventListener('hashchange',route);
+    updateCount(); route();
+  })();
+}
+</script>
+
+
+<script>
+  // ===== بيانات حساب البائع (عدّل القيم هنا فقط — الحقل الفارغ يختفي تلقائيًا) =====
+  const SELLER={
+    name:'',        // الاسم الظاهر في الحساب
+    photo:'',       // صورة الحساب (رابط أو data:image...)
+    posts:'',       // عدد المنشورات
+    followers:'',   // عدد المتابعين
+    following:'',   // عدد من يتابعهم
+    bio:''          // النبذة التعريفية
+  };
+  (function(){
+    const $=id=>document.getElementById(id);
+    if(SELLER.photo){ const im=document.createElement('img'); im.alt=''; im.src=SELLER.photo; $('ig-photo').innerHTML=''; $('ig-photo').appendChild(im); }
+    if(SELLER.name){ $('ig-name').textContent=SELLER.name; $('ig-name').hidden=false; }
+    const st=[['posts','منشور'],['followers','متابِع'],['following','يتابِع']].filter(x=>SELLER[x[0]]);
+    if(st.length){
+      $('ig-stats').innerHTML=st.map(x=>'<div><b></b><em>'+x[1]+'</em></div>').join('');
+      $('ig-stats').querySelectorAll('b').forEach((b,i)=>b.textContent=SELLER[st[i][0]]);
+      $('ig-stats').hidden=false;
+    }
+    if(SELLER.bio){ $('ig-bio').textContent=SELLER.bio; $('ig-bio').hidden=false; }
+  })();
+</script>
+
+
+<script>
+  // ===== واتساب: يفتح المحادثة مع قائمة السلة جاهزة (الرقم غير ظاهر في الصفحة) =====
+  (function(){
+    const num=['32','498','621','013'].join('');
+    document.getElementById('wa-btn').addEventListener('click',function(){
+      const msg=document.getElementById('order-text').value;
+      const url='https://wa.me/'+num+'?text='+encodeURIComponent(msg);
+      const w=window.open(url,'_blank','noopener');
+      if(!w) location.href=url;
+    });
+  })();
+</script>
+
+
+<script>
+  // ===== نبذات الكتب (نص قصير بلا ذكر مصدر) — أضف كتبًا جديدة بنفس الصيغة =====
+  let BOOK_INFO={};
+  (function(){
+    const t=document.getElementById('m-title'),d=document.getElementById('m-desc');
+    function fill(){
+      const txt=BOOK_INFO[t.textContent.trim()];
+      if(txt){ d.textContent=txt; d.hidden=false; }
+      else { d.hidden=true; d.textContent=''; }
+    }
+    new MutationObserver(fill).observe(t,{childList:true,characterData:true,subtree:true});
+  })();
+</script>
+
+<script>
+// ===== تحميل الكتب من Google Sheets =====
+// ← الصق هنا رابط الجدول المنشور بصيغة CSV بين علامتي الاقتباس (انظر ملف اقرأني.txt).
+// إن بقي فارغًا يعرض الموقع القائمة المحفوظة داخل هذا الملف.
+const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTk1wDBDQCY4TYqDBXdO488c6E7WxH-vcyaMNU3qrV9hn3yNJiJy107Mf_75_JCRHsvD66gUuFV-A3s/pub?gid=167684854&single=true&output=csv';
+const IMAGES_DIR = 'images/';
+const CAT_META = {"تنمية بشرية وتطوير الذات وعلم النفس":{"id":"self","cls":"c-self","nav":"تنمية بشرية وعلم نفس"},"الروايات والقصص":{"id":"novel","cls":"c-novel","nav":"روايات وقصص"},"الشعر والمسرح والنقد الأدبي":{"id":"poetry","cls":"c-poetry","nav":"شعر ومسرح"},"الفلسفة والفكر":{"id":"philo","cls":"c-philo","nav":"فلسفة وفكر"},"التاريخ":{"id":"history","cls":"c-history","nav":"تاريخ"},"الدين":{"id":"religion","cls":"c-religion","nav":"دين"},"المال والأعمال والاقتصاد":{"id":"business","cls":"c-business","nav":"مال وأعمال"},"التربية والتعليم واللغات":{"id":"education","cls":"c-education","nav":"تربية وتعليم ولغات"},"كتب الأطفال واليافعين":{"id":"kids","cls":"c-kids","nav":"أطفال ويافعون"},"الصحة والطب":{"id":"health","cls":"c-health","nav":"صحة وطب"},"السياسة والمجتمع":{"id":"politics","cls":"c-politics","nav":"سياسة ومجتمع"},"السير والمذكرات":{"id":"bio","cls":"c-bio","nav":"سير ومذكرات"}};
+const FALLBACK_ROWS = [["هبة العلاج النفسي","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b001.jpg","ماذا يتعلّمه معالج نفسي بعد عقود من الجلوس قبالة آلام الناس؟ يجمع إرفين يالوم خلاصة تجربته في نصائح قصيرة تدور حول الإصغاء الصادق، وصدق العلاقة بين المعالج والمريض، والشجاعة في مواجهة الأسئلة الصعبة. كتاب يقرؤه المختصون وغيرهم ليفهموا النفس من الداخل."],["كتاب الراحة","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b002.jpg","في عالم يكافئ من يركض أسرع، يأتي هذا الكتاب ليهمس بعكس ذلك: توقّف قليلًا. يدور حول معنى الراحة الحقيقية، تلك التي تعيد ترتيب الداخل لا مجرد النوم والكسل. رفيق مناسب لمن أنهكه الإيقاع السريع ويبحث عن لحظة هدوء مع نفسه."],["غدًا أجمل","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b003.jpg","حين يثقل اليوم على القلب، يمدّ هذا الكتاب يده إلى الغد. يبني رسالته على التفاؤل والأمل، ويقترح أن ما نمرّ به الآن ليس نهاية الحكاية. صفحات تصلح جرعة تشجيع قصيرة تُقرأ في أي وقت، خصوصًا لمن يمرّ بأيام متعبة."],["مختصر كلامي","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b004.jpg","ما لا تحتمله الصفحات الطويلة تقوله الجملة المركّزة. هنا أفكار موجزة عن الحياة والعلاقات والنفس، معروضة باختصار يشبه عنوانه، يمكن قراءتها على مهل أو مشاركتها مع من تحب. كتاب للقارئ الذي يفضّل الفكرة المكثفة على الإطالة."],["اليوم أجمل","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b005.jpg","ليست السعادة موعدًا نلحق به غدًا، بل شيء قد يسكن تفاصيل يومك الآن: فنجان شاي، مكالمة قصيرة، لحظة هدوء. يدعو الكتاب إلى الانتباه لهذا اليوم بالذات وتلوينه بالإيجابية، قبل أن يمضي ونحن غافلون عنه."],["كن محبًا","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b006.jpg","يطرح الكتاب سؤالًا بسيطًا: ماذا لو بدأنا أي علاقة بالمحبة بدل الحذر؟ يتأمل في أثر اللطف وحسن المعاملة على القلوب والبيوت وأماكن العمل، ويشجّع القارئ على أن يكون هو من يبدأ بالدفء. دعوة هادئة إلى ليونة تغيّر المحيط."],["القلق","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","","قلبٌ يخفق قبل الامتحان، وعقل يكرّر السيناريوهات في منتصف الليل: هذا ما يتناوله الكتاب. يتحدث عن القلق وكيف يتسلل إلى الحياة ويؤثر في الجسد والتفكير، ويعرض سبل فهمه والتعامل معه. وإن اشتدّ القلق فالاستعانة بمختص خطوة حكيمة."],["اكرهيه ليحبك أكثر","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b007.jpg","عنوانه يوحي بنصيحة ماكرة، لكنه يخالف ما يُتوقع. تقدّم مريم عصام عبدالله في كتابها (2024) قراءة نقدية لعلاقة المرأة بالرجل، تتناول فيها النظام الأبوي وتسليع المرأة وصورتها في الحب. ليس دليل تلاعب عاطفي، بل دعوة إلى وعي ومحاسبة وعلاقات أكثر إنصافًا."],["اختبر أفضل ما في داخلك","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b008.jpg","داخل كل إنسان طاقات لم تُختبر بعد، لأنه لم يمنحها فرصة. يشجّع الكتاب على التجربة والمحاولة وتجاوز حدود ما اعتاد عليه القارئ، ويحثّه على الاقتراب من نسخته الأفضل. جرعة تحفيز لمن يشعر بأنه قادر على أكثر مما يفعل."],["لماذا يحب النساء الرجال القبيحين","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b009.jpg","هل الوسامة وحدها تفتح قلب المرأة؟ يطرح الكتاب هذا السؤال بأسلوب خفيف وجريء، ويتأمل فيما يجذب النساء إلى الرجال بعيدًا عن مقاييس الشكل، كالثقة والشخصية والحضور. قراءة ممتعة في أسرار الجاذبية بين الجنسين."],["أنت رائع (أحمر)","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b010.jpg","كلمات صغيرة تُقال في الوقت المناسب قد تغيّر يومًا كاملًا. هذا الكتاب مصنوع من رسائل تذكّرك بقيمتك وقدراتك حين تنساها، وتدفعك إلى تقدير نفسك. إصدار بغلاف أحمر يصلح هدية لمن تحب أو لنفسك."],["أنت رائع (أصفر)","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b011.jpg","تخيّل أن يقف أحدهم أمامك ويقول ببساطة: أنت رائع. يحاول الكتاب أن يؤدي هذا الدور، فيرفع الثقة بالنفس ويذكّرك بما فيك من مواهب وقوة. نسخة بغلاف أصفر مبهجة، مناسبة لقراءة سريعة تُنعش المعنويات."],["اسأل تحط","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b012.jpg","بين الرغبة والتحقيق مسافة تبدأ بسؤال واضح ومبادرة شجاعة. يدور هذا الكتاب التحفيزي حول فكرة أن من يعرف ما يريد ويسعى إليه يزداد قربًا منه. يحثّ على تحديد الهدف بوضوح وعدم الاكتفاء بالانتظار."],["الجوهر الذي لا يتغير","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b013.jpg","تتبدّل التقنيات والأسواق والموضات، ويبقى الإنسان هو الإنسان. يستند مورغان هاوسل في كتابه إلى هذه الفكرة، فيروي قصصًا قصيرة عن طباع البشر وسلوكهم أمام المال والمخاطر وعدم اليقين. كتاب يعلّمك أن تستعد لما لا يُتوقع وأن تتعلم من الثوابت."],["دليل استخدام الإنسان","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b014.jpg","ليس دليلًا بالمعنى التقني، بل رحلة في داخل الإنسان بلغة العامية الشامية الدافئة. يجمع إيهاب القواسمة نصوصًا وجدانية عن الحب والخذلان والفقد والتعب الداخلي، ويفسّر ما تخفيه تصرفاتنا اليومية من خوف واحتياج. قراءة تشبه الحديث مع صديق يفهمك."],["لا تنسى أن تعيش","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b015.jpg","كثيرون ينشغلون بالحياة حتى ينسوا أن يعيشوها. يذكّرك الكتاب بأن الأعمال والهموم ليست كل شيء، وبأن اللحظات الصغيرة التي تسعدك تستحق ألا تؤجَّل. رسالة لطيفة لمن أثقلته المسؤوليات وتناسى متعته."],["متعة أن تكون في العشرين","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b016.jpg","العشرون سنّ الاحتمالات: قرارات كبيرة، وأحلام أكبر، وخوف من المجهول. يتناول الكتاب هذه المرحلة بما فيها من فرص وتحديات، ويوجّه الشاب إلى استثمار سنواته في بناء ذاته ومستقبله. مناسب لمن يقف على أول الطريق ويريد أن يستمتع به."],["30 يومًا من الاكتئاب","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b017.jpg","ثلاثون يومًا يتناول فيها الكتاب الاكتئاب: ما يرافقه من مشاعر وأفكار، وكيف يمكن التعامل معها خطوة بعد خطوة. كتاب للفهم والمواساة، ولا يغني عن الطبيب أو المعالج، فطلب المساعدة المختصة قوة لا ضعف."],["فن مخاطبة الجمهور","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b018.jpg","الوقوف أمام الناس يرعب الكثيرين أكثر مما نعترف. يتناول الكتاب مهارة الحديث أمام الجمهور: كيف تُعدّ كلمتك وتتحكم في توترك وتجذب انتباه المستمعين وتُبقيه. مفيد للطالب والمعلم والموظف وكل من سيقف يومًا خلف المنصة."],["متعة أن تكون في منتصف العمر","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b019.jpg","ليس منتصف العمر نهاية الحكاية بل منعطفًا فيها. يتأمل الكتاب هذه المرحلة وتحولاتها، ويبيّن كيف يمكن أن تُعاش بالرضا والنضج وتجديد الأهداف. دعوة لمن بلغ هذه السنّ ليرى ما فيها من متعة."],["خارطة الفرح","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b020.jpg","إن كان للفرح طريق، فهذا الكتاب يرسم خارطته. يقدّم أفكارًا تقود القارئ إلى لحظات أكثر بهجة في يومه، وتجعل صنع السعادة عادة يمكن تعلّمها لا حظًّا ينتظره. مرشد مبهج لمن يبحث عن اتجاه إلى الفرح."],["نظرية الفستق","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b021.jpg","كل شيء بدأ بموقف عابر بين فهد عامر الأحمدي وابنه، حين خطر للأب كيف يمكن لتصرف متهور أن يقلب مصير حياة بأكملها، فخرجت «نظرية الفستق». الكتاب مجموعة مقالات قصيرة عن تغيير طريقة التفكير وتطوير الذات، تُقرأ متفرقة، وصدر له جزء ثانٍ."],["الهشاشة النفسية","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b022.jpg","لماذا نبدو أسرع انكسارًا من أجدادنا أمام أبسط المتاعب؟ يسأل إسماعيل عرفة هذا السؤال في كتابه عن «جيل رقائق الثلج»، فيفتّش في مظاهر الهشاشة النفسية وأسبابها، ويقترح طرقًا عملية للتقوّي. كتاب جدلي يستفزّ التفكير ويرى أن القوة النفسية تُكتسب."],["ابدأ الحياة الآن","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b023.jpg","ننتظر الظرف المثالي والوقت المناسب واكتمال الاستعدادات... ثم تمضي السنوات. يصرخ الكتاب في وجه التأجيل، ويدعو إلى اتخاذ الخطوة الأولى اليوم دون انتظار الكمال. موجَّه لكل من يؤجّل أحلامه إلى إشعار آخر."],["اعرف وجهك الآخر","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b024.jpg","لكل منا وجه يعرفه الناس ووجه لا يراه أحد. يدعوك الكتاب إلى النظر في مرآة أعمق، لتتعرف على جوانب خفية من شخصيتك، قوتها وضعفها، وتتعلم التعامل معها. رحلة تأمل في الذات تبدأ بسؤال: من أنا حقًا؟"],["لا تكن عشوائيًا","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b025.jpg","فوضى الأيام تسرق الإنجاز بصمت. يتحدث الكتاب عن التنظيم والتخطيط ووضوح الأهداف، ويدعوك إلى ترتيب أولوياتك بدل الانجراف مع الظروف. مناسب لمن يشعر أن وقته وحياته يتناثران بلا اتجاه."],["وحزنك سينجلي","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b026.jpg","لا شيء يبقى على حاله، ولا حتى أصعب الأحزان. يمدّ الكتاب كلمات مواسية للقارئ الحزين ويذكّره بأن الألم مؤقت وأن الطمأنينة قادمة. أفكار تعين على التماسك واستعادة الأمل، تُقرأ بهدوء في الأيام الثقيلة."],["لماذا يقودك أبواك للجنون","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b027.jpg","هل تساءلت يومًا لماذا يصرّ أبواك على ترتيب غرفتك ويطاردانك بشأن الهاتف والنوم؟ يجيب عالم الأعصاب دين بيرنيت في كتابه الموجّه للمراهقين بأسلوب علمي مرح عن «أعطال» الآباء الشائعة. يساعد على أن يفهم كل طرف الآخر ويخفف الصراع داخل البيت."],["عقول قيادية بارعة","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b028.jpg","ما الذي يجعل بعض الناس يقودون وغيرهم يتبعون؟ يتناول الكتاب القيادة وصفات القادة الناجحين، ويعرض أفكارًا لتطوير مهارات التأثير والإدارة واتخاذ القرار. مناسب لمن يتطلع إلى قيادة فريق أو مشروع."],["تستطيع إنشاء حياة استثنائية","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b029.jpg","حوار دافئ بين لويز هاي وشيريل ريتشاردسون يشبه جلسة بين صديقتين تتبادلان الأسئلة والإجابات. تتناول الكاتبتان تغيير أنماط التفكير والعادات، وتقدمان تمارين عملية لبناء حياة أكثر رضا وانسجامًا مع الذات. كتاب يقول: التغيير ممكن، والبداية منك."],["ما خدعوك فقالوا","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b030.jpg","كم من مقولة رددناها دون أن نسأل: هل هي صحيحة فعلًا؟ يناقش الكتاب أفكارًا شائعة عن الحياة والنجاح، ويدعو القارئ إلى التفكير النقدي فيها بدل التسليم بها. كتاب للقارئ الذي يحب أن يفحص ما يُقال له."],["قوة التفكير الإيجابي","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b031.jpg","في عام 1952 قدّم القس نورمان فنسنت بيل وصفة لثقة لا تهتز: خليط من الإيمان وعلم النفس وخطوات عملية يواجه بها الإنسان قلقه وإحباطاته. يرى أن طريقة النظر إلى مشكلات الحياة قد تغيّر نتيجتها، وصار الكتاب من أشهر ما كُتب في هذا الباب."],["لماذا يحب الرجال أن تفهمهم النساء","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b032.jpg","بين الرجل والمرأة لغتان تتشابهان وتختلفان. يتناول الكتاب فن التواصل بينهما، ويحاول مساعدة كل طرف على فهم ما يحتاجه الآخر وكيف يعبّر عنه. مناسب لمن يبحث عن علاقة أكثر وضوحًا وتفاهمًا."],["كيف تلقي خطابًا أمام أي شخص","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b033.jpg","قبل الكلمة بدقيقة، يشتدّ القلب وتجفّ الحنجرة. هذا الدليل العملي يعلّمك التغلب على رهبة الوقوف أمام الناس وإلقاء الكلمة بثقة، بتنظيم الأفكار وإيصالها بأسلوب مؤثر. لمن يريد أن يتكلم أمام أي جمهور دون ارتباك."],["الكتاب الذي تتمنى أن يقرأه كل من تحب","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b034.jpg","تأتي فيليبا بيري، المعالجة النفسية البريطانية، بكتاب عن العلاقة بين الأهل والأبناء، لكن بدايته منّا نحن. تدعونا إلى فهم طفولتنا أولًا، ثم الإصغاء إلى أطفالنا وإصلاح أخطائنا معهم بدل الاختباء خلف الشعور بالذنب. كتاب هادئ ومنصف يُهدى للأهل وللأبناء معًا."],["لتصبح ناجحًا تأكد أن يكون لديك حلم","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b035.jpg","قبل المهارات وقبل الخطط، هناك شيء أبسط: حلم تستيقظ لأجله. يؤكد الكتاب أن النجاح يبدأ بحلم واضح وهدف تسعى إليه، ويشجّع على تحويل ذلك الحلم إلى خطة وعمل متواصل. مناسب لمن يشعر أنه يعمل بلا اتجاه."],["قوة الآن","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b036.jpg","ماذا لو كان معظم ألمنا يأتي من ماضٍ انتهى ومستقبل لم يأتِ؟ يقول إيكهارت تول إن الحل في العيش داخل اللحظة الحاضرة والتحرر من سيطرة العقل والأنا. دليل روحي هادئ إلى السلام الداخلي واكتشاف الذات الحقيقية، وصار من أكثر كتب هذا الباب انتشارًا."],["الحلول السحرية","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b037.jpg","لا تتوقع عصًا سحرية، بل أفكارًا بسيطة تغيّر زاوية النظر. يقدّم الكتاب حلولًا لمشكلات شائعة في الحياة، ويركّز على أن التغيير يبدأ من تفكير القارئ وسلوكه. لمن يحب الحلول العملية الواضحة."],["لا تنطفئ","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b038.jpg","الشغف شعلة تحتاج حماية من رياح الضغوط. يحثّ الكتاب على الحفاظ على الأمل والحماس، ويقدّم أفكارًا لتجديد الطاقة وتجنب الإرهاق النفسي. موجَّه لمن يشعر أن بريقه بدأ يخفت."],["محاط بالانتكاسات","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b039.jpg","يقدّم توماس إريكسون، صاحب سلسلة «محاط بالحمقى»، كتابًا عن اللحظات التي تنقلب فيها الخطط وتتعثر الأحلام. يعلّمك كيف تعيد التفكير في إخفاقك: تحدّد دافعك، وتضع خطة واضحة، وتتجنب الأخطاء الشائعة، مستعينًا بنظام الألوان الأربعة الشهير في كتبه. الوعد: تحويل العقبة إلى نجاح."],["دليل النجاة الفردية","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b040.jpg","حين تضطرب الظروف يبقى السؤال: ماذا يفعل المرء وحده؟ يقدّم الكتاب إرشادات للاعتماد على النفس وتجاوز الأزمات، ويهدف إلى بناء قدرة القارئ على حماية نفسه والمضي قدمًا. دليل لمن يريد أن يقف على قدميه."],["اقرأ الناس كأنهم كتاب","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b041.jpg","الكلمات لا تقول كل شيء؛ فالعين واليد ونبرة الصوت تتكلم أيضًا. يعلّمك الكتاب قراءة لغة الجسد وتعابير الوجه والإشارات غير اللفظية لفهم مشاعر الآخرين ونواياهم وتحسين تواصلك معهم. كتاب لمن يريد أن يسمع ما لا يُقال."],["لا تغلط غلطتي","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b042.jpg","ما أرخص أن تتعلم من خطأ غيرك! يشارك هذا الكتاب دروسًا وتجارب حياتية ليجنّبك أخطاء شائعة وقع فيها آخرون. دعوة إلى الاستفادة من تجارب الناس قبل أن تدفع ثمن تجربتها بنفسك."],["قوانين الطبيعة البشرية","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b043.jpg","في ثمانية عشر قانونًا يفتح روبرت غرين صندوق الدوافع الخفية للبشر: لماذا نتصرف كما نتصرف، وكيف تحرّكنا العواطف والجماعة. يستعين بأمثلة من التاريخ والسير ليعلّمك قراءة الناس وضبط انفعالاتك. كتاب ثقيل الوزن وممتع."],["سترى النور","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b044.jpg","في آخر النفق ضوء، وهذا الكتاب يذكّرك بذلك. يبثّ الأمل ويطمئن القارئ بأن الصعوبات تنقضي، ويقدّم كلمات تشجّع على الصبر والثقة بالغد. يصلح رفيقًا لمن يمرّ بمرحلة معتمة."],["كيف تعيش حياتك كما تنوي","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b045.jpg","كثيرون يعيشون حياة صنعتها الظروف لا قراراتهم. يدعو الكتاب إلى عيش الحياة وفق أهدافك وقيمك، ويقدّم أفكارًا لوضع نية واضحة وتحويلها إلى سلوك يومي. رسالته: كن أنت من يرسم المسار."],["غير فكرك","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b046.jpg","تتغير فكرة صغيرة في رأسك، فتتغير حياتك. يدعو الكتاب إلى تغيير طريقة التفكير بوصفها مدخلًا لتغيير الواقع، ويعرض أساليب لتحويل الأفكار السلبية إلى أخرى أنفع. أفكار تتحدى عاداتك الذهنية."],["كيف أكون سعيدًا","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b047.jpg","سؤال صغير بحجم الحياة. يتناول الكتاب أسباب السعادة وسبل بلوغها: الرضا، والامتنان، والعلاقات الطيبة، وعادات يومية ترفع المزاج. إرشاد عملي لمن يريد أن يجرّب السعادة بدل انتظارها."],["كيفما تفكر فكر العكس","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b048.jpg","إذا اصطدمت بجدار فجرّب أن تدور حوله من الجهة الأخرى. يدعو الكتاب إلى التفكير المغاير والنظر إلى الأمور من زاوية معاكسة، ويرى فيه مفتاحًا لحل مشكلات استعصت على الطرق المعتادة. تمرين ذهني ممتع."],["44 حب الحياة","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b049.jpg","يحمل رقمًا في عنوانه وفكرة واضحة في مضمونه: أن نحب الحياة ونقدّر ما فيها من نعم. يقدّم أفكارًا تعين على رؤيتها بعين أكثر رضا وتفاؤلًا، وتعيد إلى القارئ امتنانه لتفاصيلها. قراءة خفيفة تنعش الروح."],["الأول: كيف تكون الأفضل في كل شيء","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b050.jpg","طموح لا يرضى بالمركز الثاني. يتناول الكتاب السعي إلى التميّز وتطوير المهارات وبناء عقلية المنافسة الإيجابية، ويعرض أفكارًا لبلوغ مستوى أعلى في الدراسة والعمل والحياة. لمن يريد أن يكون في الصدارة."],["فن إدارة الوقت — إبراهيم الفقي","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b051.jpg","الوقت رأس المال الوحيد الذي يتساوى فيه الجميع، ولا يُعوَّض إذا ضاع. يقدّم إبراهيم الفقي في هذا الكتاب أساليب بسيطة لتنظيم الوقت وتحديد الأولويات والتخلص من مضيّعاته، لتستثمر يومك وتحقق أهدافك بأقل جهد. كتاب عملي يناسب الطالب والموظف."],["اكتشف ما بداخلك — إبراهيم الفقي","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b052.jpg","تحت السطح قدرات لم تستعملها بعد، هذه فكرة إبراهيم الفقي الأثيرة. يدعوك الكتاب إلى التعرف على طاقاتك الكامنة وتفعيلها، وتغيير الأفكار السلبية التي تحدّ منها، وبناء شخصية أقوى. أسلوبه تحفيزي ومباشر."],["كيف تتعامل مع الشخصيات الصعبة — إبراهيم الفقي","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b053.jpg","في كل بيت ومكتب شخصية يصعب التفاهم معها. يصنّف إبراهيم الفقي في هذا الكتاب أنماط الشخصيات الصعبة في العمل والبيت، ويقدّم طرقًا عملية للتفاهم معها وكسب احترامها بهدوء وحكمة. دليل لمن يريد أن يخفف توتر علاقاته."],["الثقة بالنفس — إبراهيم الفقي","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b054.jpg","ثقتك بنفسك عضلة تُدرَّب. يشرح إبراهيم الفقي كيف تبني ثقتك وتتغلب على الخوف والخجل، ويقدّم تمارين عملية لتغيير الصورة الذهنية التي ترسمها عن نفسك. كتاب لمن يتردد أمام كل فرصة."],["العادات السبع — إبراهيم الفقي","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b055.jpg","الحياة الناجحة تُبنى من عادات صغيرة تتكرر. يعرض إبراهيم الفقي في هذا الكتاب عادات يُنصح بها لبناء الشخصية وتطوير الذات، ويقدّم أفكارًا عملية لترسيخ السلوكيات الإيجابية. دليل لمن يريد تغيير نفسه بالتدريج."],["كيف تنشط ذاكرتك — إبراهيم الفقي","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b056.jpg","كم مرة وقفت عاجزًا عن تذكّر اسم أو موعد؟ يقدّم إبراهيم الفقي أساليب بسيطة لتقوية الذاكرة وتحسين التركيز وتجنب أسباب النسيان. كتاب مفيد للطلاب وكل من يريد عقلًا أكثر حضورًا."],["الفراسة — إبراهيم الفقي","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b057.jpg","قبل أن يتكلم الإنسان، تفضحه ملامحه وهيئته وطريقة وقوفه. يتناول إبراهيم الفقي فن الفراسة، أي قراءة الشخصية من الملامح والتصرفات، ويقدّم أسسًا لفهم طباع الناس وحسن التعامل معهم. مدخل شيّق إلى قراءة الناس."],["الشخصية الساحرة","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b058.jpg","ما الذي يجعل بعض الناس يدخلون القلوب بلا استئذان؟ يقدّم الكتاب أسس بناء شخصية جذابة مؤثرة: حسن التواصل، والثقة، واللباقة، وترك أثر طيب لدى من تلقاهم. كتاب لمن يريد أن يكون حضوره محبَّبًا."],["المرونة سر الصلابة 2","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","","الشجرة التي تنحني للريح لا تنكسر. يتناول الكتاب المرونة النفسية، أي القدرة على التكيف مع الأزمات والتعافي منها، ويرى أن الليونة تحمي الإنسان من الانكسار أكثر مما تفعل القسوة. الجزء الثاني يواصل طرح الفكرة."],["الشخصية الفعالة","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b059.jpg","الشخص الفعّال لا ينتظر أن تتغير الظروف بل يبادر. يعرض الكتاب صفات الشخصية الفعالة وعاداتها: المبادرة، والتخطيط، وإدارة الذات، وحسن العلاقة مع الآخرين. دليل لمن يريد أن يتحول من متفرج إلى فاعل."],["مهارات اتخاذ القرار","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","","القرار الجيد يبدأ قبل لحظة الاختيار بكثير. يقدّم الكتاب مهارات عملية: كيف تجمع المعلومات، وتوازن بين الخيارات، وتتجنب التردد والاندفاع. خطوات واضحة تعين على قرارات أوضح في الحياة والعمل."],["التفكير ومعالجة الأفكار","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","","أفكارك تصنع مزاجك قبل أن تصنع قراراتك. يشرح الكتاب أنماط التفكير وكيف نعالج الأفكار السلبية، ويدعو إلى تنمية التفكير الإيجابي والإبداعي في الحياة اليومية. رحلة إلى داخل العقل ومصنع الأفكار."],["كيف تحدد أهدافك","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","","الهدف الذي لا تكتبه حلم، والذي تكتبه خطة. يشرح الكتاب كيف تحدد أهدافك وتصوغها بوضوح، ثم تضع خطة لتحقيقها، محوّلًا الأحلام إلى خطوات قابلة للقياس والمتابعة. بوصلة عملية لمن يشعر بالضياع."],["كيف نختلف: اسمعني وأسمعك","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","","الخلاف لا يفسد العلاقة، لكن طريقة إدارته قد تفعل. يتناول الكتاب آداب الاختلاف وفن الحوار والإصغاء للطرف الآخر، ويدعو إلى أن يكون الخلاف في الرأي سببًا للتفاهم لا للقطيعة. عنوانه يلخص مبدأه: اسمعني وسأسمعك."],["قوة الخطوات الصغيرة","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","","لا تحتاج إلى قفزة هائلة لتغيّر حياتك؛ ربما تكفي خطوة صغيرة كل يوم. يدعو الكتاب إلى تحقيق التغيير الكبير بخطوات صغيرة متواصلة، ويرى أن البدء بعادات بسيطة أسهل طريق لبلوغ الأهداف. لمن يتوقف أمام ضخامة المهمة."],["فن قراءة الوجوه وكشف خبايا النفوس","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b060.jpg","للوجه لغة، وهي قديمة قدم علم الفراسة. يتناول الكتاب قراءة ملامح الوجه وتعبيراته لفهم طباع الناس، ويقدّم إشارات تعين على تكوين انطباع عن الشخص ومشاعره. يُستحسن أن يُقرأ بعين ناقدة مع الاستمتاع بفكرته."],["كيف تختار شريك حياتك","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","","قرار الارتباط من أكبر قرارات العمر. يساعد الكتاب على اختيار شريك الحياة على أسس واعية، من الطباع والتفاهم والقيم المشتركة، وينبّه إلى معايير يغفل عنها كثيرون حين يقودهم الإعجاب وحده. دليل لمن يفكر في الزواج."],["غضب زوجك","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","","حين يشتعل الغضب في البيت، تحتاج الزوجة إلى فهم قبل ردّ الفعل. يتناول الكتاب أسباب غضب الزوج، ويقدّم أساليب هادئة للتعامل معه واحتوائه حفاظًا على استقرار البيت. موجَّه للزوجة الراغبة في سلام أكبر داخل بيتها."],["البرود العاطفي والبرود الجنسي","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","","حين يفتر الدفء بين الزوجين، يبدأ البحث عن الأسباب. يتناول الكتاب الفتور العاطفي والجنسي في العلاقة الزوجية، وما قد يقف خلفه، وطرق التعامل معه ومعالجته. وإذا استمرت المشكلة، فمراجعة مختص تبقى الخطوة الأوضح."],["كن سعيدًا","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b061.jpg","السعادة قرار قبل أن تكون ظروفًا. يدعو الكتاب إلى اختيار السعادة والتركيز على الجوانب الإيجابية، ويعرض نصائح بسيطة لتبديد الهموم وعيش يوم أجمل. كلمات خفيفة تُقرأ بابتسامة."],["دروس في حياتي","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b062.jpg","خلاصة الأيام تُقال بلا ضجيج: هذه دروس تعلّمها كاتب من مواقف الحياة. يقدّم الكتاب عبرًا وخلاصات من التجارب تعين القارئ على التعلم من المواقف، كأنه يجلس مع إنسان خبر الحياة."],["فيتامينات نفسية","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b063.jpg","جسدك يحتاج فيتامينات، ونفسك كذلك. يقدّم الكتاب جرعات مبسطة من النصائح والأفكار تشجّع على التفاؤل وتقوّي النفس وتمنحها الطمأنينة. قراءة سريعة تُنعش الروح."],["علم النفس التجريبي","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b064.jpg","كيف يتحول سؤال عن سلوك الإنسان إلى تجربة تُقاس؟ يعرّف الكتاب بمنهج علم النفس التجريبي وتجاربه في الإدراك والتعلم والذاكرة والدافعية. مدخل لطلاب علم النفس والمهتمين بالأسس العلمية لدراسة السلوك."],["خلاصة علم النفس","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b065.jpg","علم النفس في رحلة قصيرة. يلخّص الكتاب أبرز مفاهيمه واتجاهاته ومدارسه بأسلوب مبسّط، فيصلح مدخلًا سريعًا للقارئ غير المتخصص قبل الانتقال إلى القراءات الأعمق. نقطة بداية خفيفة."],["مباحث في نظرية الجنس","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b066.jpg","كتاب أحدث ضجة حين ظهر، وغيّر النظرة إلى النفس. يبحث سيغموند فرويد في عمله هذا تطور الحياة الغريزية عند الإنسان منذ الطفولة حتى البلوغ، وهو من الركائز المؤسسة للتحليل النفسي. يُقرأ أيضًا بوصفه وثيقة تاريخية في تطور علم النفس."],["اللغز الأنثوي","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b067.jpg","قيل كثيرًا إن المرأة لغز، فهل هي كذلك؟ يحاول الكتاب فهم ما يبدو غامضًا في شخصيتها وسلوكها، ويتناول مشاعرها وحاجاتها وكيف يمكن أن تُفهم. محاولة لتفكيك الغموض بنظرة نفسية."],["خوارق اللاشعور","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b068.jpg","في أعماق العقل غرفة لا نعرف عنها إلا القليل. يتناول الكتاب العقل اللاواعي وما يُنسب إليه من ظواهر وقدرات غير مألوفة، ويستعرض أفكارًا حول تأثيره في سلوك الإنسان. لمن يحب الغوص في الجانب الغامض من النفس."],["السلوك الشاذ","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b069.jpg","أين يقف الحد بين السلوك المألوف والشاذ؟ يتناول الكتاب السلوك الشاذ في علم النفس، ومعايير الحكم عليه، وأنواع الاضطرابات وأسبابها. مدخل علمي مبسّط للمهتمين بفهم الصحة النفسية."],["السلوك الاجتماعي","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b070.jpg","لا يعيش الإنسان وحده، وسلوكه يتشكل بوجود الآخرين. يدرس الكتاب سلوك الفرد داخل الجماعة: كيف يتأثر بمن حوله، وعلاقاته وأدواره الاجتماعية، وكيف تتشكل الاتجاهات والقيم. نظرة نفسية إلى المجتمع من الداخل."],["الذكاء","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b071.jpg","ما هو الذكاء، وهل يُقاس بالأرقام؟ يعرّف الكتاب بمفهوم الذكاء وأنواعه وطرق قياسه وعوامل نموه، ويعرض أبرز نظريات علم النفس فيه بأسلوب مبسّط. مناسب لمن يتساءل عن عقله وعقول الآخرين."],["المدخل إلى علم النفس","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b072.jpg","الباب الأول لمن يريد دخول عالم النفس. يعرّف الكتاب بمجالات علم النفس ومدارسه ومفاهيمه الأساسية، كالدافعية والتعلم والشخصية والانفعال. مناسب للطلاب والمبتدئين الذين يبحثون عن خارطة عامة."],["الذاكرة","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b073.jpg","لماذا نتذكر وجهًا وننسى اسمه؟ يتناول الكتاب الذاكرة الإنسانية، كيف نختزن المعلومات ونسترجعها ولماذا ننسى. يعرض أبرز ما توصل إليه علم النفس في هذا الموضوع بأسلوب يفيد الطالب والمهتم."],["الشخصية","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b074.jpg","ما الذي يجعلك أنت؟ يتناول الكتاب الشخصية في علم النفس: تكوينها وأنماطها، والعوامل المؤثرة فيها كالوراثة والبيئة والتربية. مدخل لفهم الفروق بين الناس وفهم النفس."],["حضارة السمكة الحمراء","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b075.jpg","يقال إن ذاكرة السمكة الحمراء قصيرة، فتظنّ كل جولة في الإناء اكتشافًا جديدًا. بهذه الصورة يصف الفرنسي برونو باتينو إنسان عصر الشاشات، حبيس واجهات رقمية تتحكم بانتباهه وتسرق وقته. كتاب صغير الحجم عن تشتت الانتباه وكيف نستعيد زمام وقتنا."],["مميز بالأصفر","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b076.jpg","عنوانه من قلم التمييز الأصفر الذي يُمرَّر على أهم السطور في الكتب. يجمع جاكسون براون الابن وروشيل بينينغتون (2001) نصائح وأقوالًا وقصصًا قصيرة عن العيش بحكمة، تتناول الإحسان والعطاء والزواج والأبوة والاستمتاع بتفاصيل الحياة البسيطة. كتاب يصلح للتأمل والاقتباس."],["محرك الدمى","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b077.jpg","وراء كل ملف جنائي عقل له منطقه المظلم. يأخذك محمد الشيباني من منظور محلل إلى داخل العقول الإجرامية، فيروي أنماط سلوك الجناة وما وراء قضاياهم بتفاصيل صريحة دون تجميل. قراءة مشوّقة ومقلقة، ليست لضعاف القلوب."],["ملفات سرية","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b078.jpg","ثمة ما يختبئ خلف تصرفات الناس. يكشف الكتاب جوانب خفية من النفس والسلوك الإنساني من خلال حالات وقصص، ويقدّم قراءة نفسية لما وراء التصرفات. للفضوليين الذين يريدون معرفة ما وراء الأقنعة."],["أتلف دفتر اليوميات هذا","تنمية بشرية وتطوير الذات وعلم النفس","","نعم","b079.jpg","دفتر يطلب منك المستحيل: أن تفسده. تضع كيري سميث بين يديك صفحات تدعوك إلى الرسم والتمزيق والتلطيخ والتجريب بلا قواعد. فكرته أن الخوف من الخطأ يخنق الإبداع، وأن الفوضى طريق إليه. تسلية تحرّر وتُلهم."],["جرائم لم تحل","الروايات والقصص","","نعم","b080.jpg",""],["عدوي اللدود","الروايات والقصص","","نعم","b081.jpg",""],["لا تنسى أن تغني في قوارب الحياة","الروايات والقصص","","نعم","b082.jpg",""],["بين تبلد وحنين","الروايات والقصص","","نعم","b083.jpg",""],["قصص من وحي الواقع","الروايات والقصص","","نعم","b084.jpg",""],["قلعة في الهواء","الروايات والقصص","","نعم","b085.jpg",""],["جومانا","الروايات والقصص","","نعم","b086.jpg",""],["دليل جدتي لقتل الأوغاد","الروايات والقصص","","نعم","b087.jpg","رواية ميرنا المهدي (2023) التي تمزج الجريمة بالكوميديا السوداء والنقد الاجتماعي. تبدأ بجثة رجل وجدّة قوية يشتبه بها حفيدها، وبلغت القائمة الطويلة لجائزة كتارا للرواية العربية."],["عظام القلب","الروايات والقصص","","نعم","b088.jpg",""],["بحيرة العشق","الروايات والقصص","","نعم","b089.jpg",""],["قيس وليلى الذئب","الروايات والقصص","","نعم","b090.jpg",""],["جرعة زائدة","الروايات والقصص","","نعم","",""],["حالات حرجة","الروايات والقصص","","نعم","b091.jpg",""],["أرصفة الكرادة","الروايات والقصص","","نعم","b092.jpg",""],["وكان النفاق جميلًا","الروايات والقصص","","نعم","b093.jpg",""],["فتاة البرتقال","الروايات والقصص","","نعم","b094.jpg","رواية جوستين غاردر عن فتى يتلقى رسالة تركها له أبوه قبل وفاته بسنوات، تحكي عن فتاة غامضة تحمل كيس برتقال. قصة مؤثرة عن الحب والموت وقيمة الحياة."],["شغفها حبًا","الروايات والقصص","","نعم","b095.jpg",""],["من يرد لي ذات","الروايات والقصص","","نعم","",""],["كابوس","الروايات والقصص","","نعم","",""],["عداء الطائرة الورقية","الروايات والقصص","","نعم","b096.jpg","رواية خالد حسيني عن أمير وحسن، صديقين من كابول تفرّقهما خيانة في الطفولة يحمل أمير ذنبها سنين طويلة. يعود إلى أفغانستان ساعيًا إلى التكفير عن خطئه."],["تغريبة القافر","الروايات والقصص","","نعم","b097.jpg","رواية زهران القاسمي الفائزة بالجائزة العالمية للرواية العربية. تدور في قرية عُمانية حول سالم بن عبدالله، القافر الذي يهتدي إلى مجاري المياه الجوفية، وتتشابك حياته مع أسرار أهل القرية."],["بحر الظلمات","الروايات والقصص","","نعم","b098.jpg",""],["شجرتي شجرة البرتقال الرائعة","الروايات والقصص","","نعم","b099.jpg","قصة زيزا، الطفل البرازيلي الفقير الذكي الشقي، الذي يجد عزاءه في شجرة برتقال يحادثها وفي صداقة رجل طيب. رواية مؤثرة عن الطفولة والحنان."],["كل صيف تلاه","الروايات والقصص","","نعم","b100.jpg","رواية كارلي فورتشن عن بيرسي التي تعود بعد سنوات إلى بلدة هادئة على بحيرة. تواجه فيها ذكرى صيف لا يُنسى وقصة حب قديمة مع سام."],["نسيان com","الروايات والقصص","","نعم","b101.jpg","كتاب أحلام مستغانمي بأسلوب ساخر عن النسيان وتجاوز الخيبة العاطفية. يقدّم للمرأة دليلًا طريفًا إلى التحرر من ذكرى رجل خذلها."],["قلب دم","الروايات والقصص","","نعم","b102.jpg",""],["بدر","الروايات والقصص","","نعم","",""],["أنتاركتيكا","الروايات والقصص","","نعم","b103.jpg",""],["تحت أمطار بيرنيز","الروايات والقصص","","نعم","b104.jpg",""],["وجبة العشاء الأخيرة","الروايات والقصص","","نعم","b105.jpg",""],["كيف بميكاليل","الروايات والقصص","","نعم","b106.jpg",""],["كتاب عجيب","الروايات والقصص","","نعم","b107.jpg",""],["الفندق المسكون","الروايات والقصص","","نعم","b108.jpg",""],["خديعة الحب الإسباني","الروايات والقصص","","نعم","b109.jpg",""],["بين الأساطير","الروايات والقصص","","نعم","b110.jpg",""],["حبيبتي بكماء","الروايات والقصص","","نعم","b111.jpg",""],["نصفي من الشرق","الروايات والقصص","","نعم","b112.jpg",""],["ورددت الجبال الصدى","الروايات والقصص","","نعم","b113.jpg","رواية خالد حسيني تبدأ بأخ وأخته الصغيرة في قرية أفغانية فقيرة تفرّقهما قرارات العائلة. تتبع أثر هذا الفراق في أجيال وبلدان مختلفة."],["عهد دميانة","الروايات والقصص","","نعم","b114.jpg",""],["القوقعة","الروايات والقصص","","نعم","b115.jpg","رواية مصطفى خليفة عن شاب سوري يعود من دراسته في فرنسا فيُعتقل بتهمة لا يعرفها ويقضي أكثر من عقد في السجن. شهادة روائية قاسية عن القمع والعزلة."],["ساق البامبو","الروايات والقصص","","نعم","b116.jpg","رواية سعود السنعوسي الفائزة بالبوكر العربية 2013، عن عيسى ابن الأب الكويتي والأم الفلبينية. يبحث عن هويته وانتمائه بين وطنين لا يتقبّله أيٌّ منهما."],["إكستاسي","الروايات والقصص","","نعم","b117.jpg",""],["مخطوطات مدفونة","الروايات والقصص","","نعم","b118.jpg",""],["ملاك أكتوبر","الروايات والقصص","","نعم","b119.jpg",""],["تعويذة محرمة","الروايات والقصص","","نعم","b120.jpg",""],["مذكرات الموتى","الروايات والقصص","","نعم","b121.jpg",""],["الجاسوسة","الروايات والقصص","","نعم","b122.jpg","رواية باولو كويلو عن ماتا هاري، الراقصة الهولندية التي اتُّهمت بالتجسس في الحرب العالمية الأولى وأُعدمت. يرويها بصيغة رسائلها الأخيرة، متأملًا في الحرية والحب."],["مكان لا تجوبه الكلاب","الروايات والقصص","","نعم","b123.jpg",""],["العوسج ١","الروايات والقصص","","نعم","b124.jpg",""],["العوسج ٢","الروايات والقصص","","نعم","b125.jpg",""],["إن في مرتفعات الخضراء","الروايات والقصص","","نعم","b126.jpg",""],["الصمت","الروايات والقصص","","نعم","",""],["حالات نادرة","الروايات والقصص","","نعم","b127.jpg",""],["القربان","الروايات والقصص","","نعم","b128.jpg",""],["الأم فيرتر","الروايات والقصص","","نعم","b129.jpg",""],["الفتاة التي أنجبت أمها","الروايات والقصص","","نعم","b130.jpg",""],["يا صاحبي السجن","الروايات والقصص","","نعم","b131.jpg",""],["الأعمى والأطرش","الروايات والقصص","","نعم","b132.jpg",""],["العاشق","الروايات والقصص","","نعم","b133.jpg",""],["مشرحة بغداد","الروايات والقصص","","نعم","b134.jpg",""],["دوج ١","الروايات والقصص","","نعم","b135.jpg",""],["دوج ٢","الروايات والقصص","","نعم","b136.jpg",""],["عرش على ريش حسون","الروايات والقصص","","نعم","b137.jpg",""],["متجر دالوجوت ١","الروايات والقصص","","نعم","b138.jpg",""],["متجر دالوجوت ٢","الروايات والقصص","","نعم","b139.jpg",""],["أوليفيا","الروايات والقصص","","نعم","b140.jpg","قصة مصوّرة للأطفال من تأليف إيان فالكونر عن أوليفيا، الخنزيرة الصغيرة النشيطة كثيرة الخيال. تملأ يومها بالمرح والمقالب والأحلام، وتتعثر في أحيان كثيرة فتُضحك القارئ."],["على بعد خمس خطوات","الروايات والقصص","","نعم","b141.jpg","رواية راشيل ليبينكوت عن مراهقين يعيشان في مستشفى بسبب مرض مزمن ويُمنعان من الاقتراب من بعضهما. تنشأ بينهما قصة حب تتحدى القواعد والمسافات."],["المعركة الباردة","الروايات والقصص","","نعم","b142.jpg",""],["لا بطعم الفلامنكو","الروايات والقصص","","نعم","b143.jpg",""],["صاحب الظل الطويل","الروايات والقصص","","نعم","b144.jpg","رواية جين ويبستر مكتوبة بالرسائل، تكتبها جودي أبوت اليتيمة إلى متبرع مجهول يموّل دراستها الجامعية. حكاية مرحة دافئة عن الصداقة والنضج."],["مئة عام من العزلة","الروايات والقصص","","نعم","b145.jpg","رواية غابرييل غارسيا ماركيز التي تتبع عائلة بوينديا عبر أجيال متعاقبة في قرية ماكوندو الخيالية. تمزج الواقع بالأسطورة في سرد ساحر عن العزلة والحب والزمن."],["المخبول","الروايات والقصص","","نعم","b146.jpg",""],["مخيلة قاتل","الروايات والقصص","","نعم","b147.jpg",""],["بين الحب والسراب","الروايات والقصص","","نعم","b148.jpg",""],["ضحية نفسي","الروايات والقصص","","نعم","b149.jpg",""],["شرف","الروايات والقصص","","نعم","b150.jpg","رواية إليف شافاق عن أسرة كردية تركية مهاجرة إلى لندن، تتفكك بعد جريمة شرف. تعود إلى جذور القرية وتقاليدها لتكشف كيف يمكن للعادات أن تدمّر الأحبّة."],["متلازمة فرجولي","الروايات والقصص","","نعم","b151.jpg",""],["حقل التفاح","الروايات والقصص","","نعم","b152.jpg",""],["لربما في حياة أخرى","الروايات والقصص","","نعم","b153.jpg",""],["إن بعض الرجال آثم","الروايات والقصص","","نعم","b154.jpg",""],["كيف قتلت أبي","الروايات والقصص","","نعم","b155.jpg",""],["الرعب","الروايات والقصص","","نعم","",""],["٥ أصوات","الروايات والقصص","","نعم","b156.jpg",""],["١١:١١","الروايات والقصص","","نعم","b157.jpg",""],["نساء صغيرات","الروايات والقصص","","نعم","b158.jpg","رواية لويزا ماي ألكوت عن الأخوات الأربع من آل مارش وهنّ يكبرن في أمريكا زمن الحرب الأهلية، تجمعهن المحبة رغم ضيق الحال. حكاية دافئة عن الأسرة والطموح."],["مخلوقات الليل","الروايات والقصص","","نعم","b159.jpg",""],["حايم وأويزمان","الروايات والقصص","","نعم","b160.jpg",""],["روزينها زورقي الصغير","الروايات والقصص","","نعم","b161.jpg",""],["ملاذ","الروايات والقصص","","نعم","b162.jpg",""],["جاري الكتابة","الروايات والقصص","","نعم","b163.jpg",""],["الفتى النبيل","الروايات والقصص","","نعم","b164.jpg",""],["ذكر شرقي منقرض","الروايات والقصص","","نعم","b165.jpg",""],["كتاب خالد","الروايات والقصص","","نعم","b166.jpg",""],["ذئب البوادي","الروايات والقصص","","نعم","b167.jpg","رواية هرمان هيسه عن هاري هالر، مثقف منعزل يرى نفسه نصف إنسان ونصف ذئب. رحلة بحث عن الذات بين نفوره من المجتمع وتوقه إلى الحياة."],["بيت خالتي","الروايات والقصص","","نعم","b168.jpg",""],["أناس عاديون","الروايات والقصص","","نعم","b169.jpg","رواية سالي روني (2018) عن ماريان وكونيل، مراهقين من مدرسة واحدة تجمعهما علاقة سرية ثم تتباعد بهما الطبقة والظروف. حكاية عن الحب والفوارق الاجتماعية."],["وكأنني في السماء","الروايات والقصص","","نعم","b170.jpg",""],["السماء لا تحابي أحدًا","الروايات والقصص","","نعم","b171.jpg",""],["المعشوق","الروايات والقصص","","نعم","b172.jpg",""],["وعد على ريش حسون","الروايات والقصص","","نعم","b173.jpg",""],["نوح المذبوح","الروايات والقصص","","نعم","b174.jpg",""],["يوميات طائر الزنبرك","الروايات والقصص","","نعم","b175.jpg","رواية هاروكي موراكامي: يبحث تورو أوكادا عن قطته المفقودة ثم عن زوجته، فيدخل عالمًا غريبًا تمتزج فيه الحياة اليومية بالخيال وأسرار الحرب."],["سندباد الأعمى","الروايات والقصص","","نعم","b176.jpg",""],["ليلى","الروايات والقصص","","نعم","",""],["جميع الأماكن مشرقة","الروايات والقصص","","نعم","b177.jpg","رواية جينيفر نيفن عن مراهقين يلتقيان في مدرستهما، يحمل كل منهما وجعًا لا يُرى. يخوضان معًا مشروعًا لاكتشاف أماكن مدهشة، فتتحول صداقتهما إلى حب مؤثر."],["كل أزرق السماء","الروايات والقصص","","نعم","b178.jpg","رواية الفرنسية ميليسا دا كوستا عن شاب وفتاة غريبين يقرران الانطلاق معًا في رحلة بعيدًا عن حياتهما. يكتشفان على الطريق معنى الصداقة والحب والعيش اللحظة."],["ما يذكرني بك","الروايات والقصص","","نعم","b179.jpg",""],["سفينة نيرودا","الروايات والقصص","","نعم","b180.jpg",""],["جزيرة الأشجار المفقودة","الروايات والقصص","","نعم","b181.jpg","رواية إليف شافاق عن قصة حب بين شاب يوناني وفتاة تركية في قبرص زمن الصراع بين الطائفتين. تتخلّلها حكاية شجرة تين، وتتبع أثر الماضي في الجيل التالي."],["اماريتا","الروايات والقصص","","نعم","b182.jpg",""],["ربما في حياة أخرى","الروايات والقصص","","نعم","b153.jpg",""],["أنا وأوغي","الروايات والقصص","","نعم","b183.jpg",""],["العرين","الروايات والقصص","","نعم","b184.jpg",""],["الكاهن وظله","الروايات والقصص","","نعم","b185.jpg",""],["بيتشيني","الروايات والقصص","","نعم","b186.jpg",""],["البارون","الروايات والقصص","","نعم","b187.jpg",""],["سلسلة أبادول","الروايات والقصص","","نعم","b188.jpg",""],["مدينة الأقوياء","الروايات والقصص","","نعم","b189.jpg",""],["البؤساء","الروايات والقصص","","نعم","b190.jpg","ملحمة فيكتور هوغو عن جان فالجان، السجين السابق الذي يحاول بناء حياة جديدة في فرنسا القرن التاسع عشر. رواية عن الظلم والرحمة والفداء."],["الكونت دي مونت كريستو","الروايات والقصص","","نعم","","رواية ألكسندر دوما عن إدموند دانتس، البحار الشاب الذي يُسجن ظلمًا بوشاية من حاسديه. يهرب بعد سنوات طويلة ويعود بهوية الكونت الغامض لينتقم ممن خانوه."],["مادلين","الروايات والقصص","","نعم","","قصة مصوّرة للأطفال من تأليف لودفيغ بيملمانز عن مادلين، أصغر بنات مدرسة داخلية في باريس تعيش في رعاية الآنسة كلافيل. فتاة شجاعة لا تهاب شيئًا، وتحكي مغامرة طريفة عن الجرأة والصداقة."],["مرسلين الجميلة","الروايات والقصص","","نعم","b191.jpg",""],["سيمفونية البحر","الروايات والقصص","","نعم","",""],["أفضل القصص الفرنسية","الروايات والقصص","","نعم","b192.jpg",""],["خان الخليلي","الروايات والقصص","","نعم","b193.jpg","رواية نجيب محفوظ (1945) عن أسرة تنتقل إلى حي خان الخليلي بالقاهرة هربًا من غارات الحرب العالمية الثانية. تتبع أحمد عاكف وطموحاته المحبَطة."],["أرسين لوبين","الروايات والقصص","","نعم","","مغامرات اللص الظريف أرسين لوبين التي ابتكرها الفرنسي موريس لوبلان. يسرق الأثرياء بدهاء وتنكّر وأناقة، ويدخل في مواجهات ذكية مع الشرطة ومع المحقق الشهير."],["الجاسوس الأعمى","الروايات والقصص","","نعم","b194.jpg",""],["لصوص نيويورك","الروايات والقصص","","نعم","b195.jpg",""],["الجريمة المستحيلة","الروايات والقصص","","نعم","b196.jpg",""],["الساحر العظيم","الروايات والقصص","","نعم","b197.jpg",""],["الجرائم الثلاثة","الروايات والقصص","","نعم","b198.jpg",""],["اعترافات","الروايات والقصص","","نعم","b199.jpg",""],["الغرفة الصفراء","الروايات والقصص","","نعم","b200.jpg","رواية غاستون لورو (1907) من أوائل روايات الجريمة البوليسية، تدور حول اعتداء غامض داخل غرفة مغلقة من الداخل. يحقق فيها الصحفي الشاب رولتابيه."],["مغامرات شرلوك هولمز","الروايات والقصص","","نعم","b201.jpg","قصص آرثر كونان دويل عن المحقق الشهير شرلوك هولمز وصديقه الدكتور واطسون. يحل الألغاز بالملاحظة الدقيقة والاستنتاج المنطقي."],["الحنين","الروايات والقصص","","نعم","b202.jpg",""],["حب الأول","الروايات والقصص","","نعم","b203.jpg",""],["لي أنا أولًا","الروايات والقصص","","نعم","b204.jpg",""],["هتعدي","الروايات والقصص","","نعم","b205.jpg",""],["الشاعر","الشعر والمسرح والنقد الأدبي","","نعم","b206.jpg",""],["حليب وعسل","الشعر والمسرح والنقد الأدبي","","نعم","b207.jpg","ديوان روبي كور (2014) في أربعة أقسام عن الألم والحب والانكسار والتعافي. نصوص قصيرة بسيطة صارت من أكثر دواوين الشعر انتشارًا في عصرنا."],["أوراق الورد","الشعر والمسرح والنقد الأدبي","","نعم","b208.jpg","نصوص أدبية لمصطفى صادق الرافعي في الحب والوجد، على هيئة رسائل ومناجاة. تتميّز بلغة بيانية رفيعة وعاطفة صادقة."],["تاجر البندقية","الشعر والمسرح والنقد الأدبي","","نعم","b209.jpg","مسرحية ويليام شكسبير عن التاجر أنطونيو الذي يقترض من المرابي شايلوك ويرهن عليه رطلًا من لحمه. تعالج الجشع والعدالة والرحمة."],["مجنون ليلى","الشعر والمسرح والنقد الأدبي","","نعم","b210.jpg","قصة الحب العذري الخالدة بين قيس بن الملوّح وليلى العامرية في بادية العرب. تحول العادات والتقاليد دون زواجهما، فيهيم قيس في الصحراء ويُعرف بالمجنون."],["قيس ولبنى","الشعر والمسرح والنقد الأدبي","","نعم","b211.jpg","حكاية الحب بين قيس بن ذريح ولبنى التي جمعهما زواج سعيد. يضغط الأهل على قيس ليطلّقها، فيذوق مرارة الفراق والندم، وتبقى قصتهما من أشهر قصص العشق في التراث العربي."],["أروع ما كتب — جمال البخيت","الشعر والمسرح والنقد الأدبي","","نعم","",""],["أروع ما كتب — بيرم التونسي","الشعر والمسرح والنقد الأدبي","","نعم","b212.jpg","مختارات من أجمل ما كتبه بيرم التونسي، شاعر الزجل المصري الساخر. تعكس قصائده روح الشارع والنقد الاجتماعي، وقد غنّى كثيرًا منها كبار المطربين."],["أروع ما كتب — إبراهيم حافظ","الشعر والمسرح والنقد الأدبي","","نعم","","مختارات من شعر حافظ إبراهيم، شاعر النيل وأحد أعلام الشعر العربي الحديث. عُرف بقصائده الوطنية والاجتماعية، وبقصيدته الشهيرة عن اللغة العربية."],["أروع ما كتب — فؤاد حداد","الشعر والمسرح والنقد الأدبي","","نعم","b213.jpg","مختارات من شعر فؤاد حداد، أحد أبرز شعراء العامية المصرية. قصائده تمزج بين الوطن والإنسان والتراث الشعبي بلغة بسيطة عميقة الأثر."],["أروع ما كتب — علي محمد طه","الشعر والمسرح والنقد الأدبي","","نعم","","مختارات من شعر علي محمود طه، من أبرز شعراء الرومانسية العربية وجماعة أبولو. تتميز قصائده بالموسيقى الرقيقة وصور الطبيعة والحب، ومنها «الجندول» الشهيرة."],["أروع ما كتب — نجيب سرور","الشعر والمسرح والنقد الأدبي","","نعم","","مختارات من شعر نجيب سرور، الشاعر والمسرحي المصري المعروف بتمرده وجرأته. يجمع نصه بين الغضب الاجتماعي والحنين والسخرية، ومن أشهر أعماله «ياسين وبهية»."],["كتاب الأسئلة","الشعر والمسرح والنقد الأدبي","","نعم","b214.jpg","ديوان لبابلو نيرودا يتكوّن من قصائد قصيرة مبنية بالكامل على أسئلة شاعرية عن الطبيعة والحياة والموت والزمن."],["هرمن ودروتيه","الشعر والمسرح والنقد الأدبي","","نعم","b215.jpg","قصيدة ملحمية لغوته (1797) عن شاب ألماني يقع في حب لاجئة جاءت هاربة من الحرب. يجمع العمل بين الحب والحياة الريفية وأثر الثورة الفرنسية."],["تعاليت","الشعر والمسرح والنقد الأدبي","","نعم","b216.jpg",""],["الطبيعة وما بعد الطبيعة","الفلسفة والفكر","","نعم","b217.jpg",""],["أحلام الفلاسفة","الفلسفة والفكر","","نعم","b218.jpg",""],["مهزلة العقل البشري","الفلسفة والفكر","","نعم","b219.jpg","كتاب علي الوردي يناقش طبيعة التفكير الإنساني وتأثره بالعاطفة والتقاليد والمصالح. يمتد نقده إلى المنطق والمجتمع بأسلوب جريء ساخر."],["فن الحرب","الفلسفة والفكر","","نعم","b220.jpg","مؤلَّف صيني قديم يُنسب إلى القائد سون تزو، يضم ثلاثة عشر فصلًا في التخطيط والاستراتيجية. تُطبَّق مبادئه اليوم في القيادة والإدارة والتفاوض."],["سوفسطائية للبيع","الفلسفة والفكر","","نعم","b221.jpg",""],["تاريخ الفلسفة الأوروبية في العصر الوسيط","الفلسفة والفكر","","نعم","b222.jpg","كتاب يوسف كرم الذي يتتبع تطور الفكر الفلسفي في أوروبا من آباء الكنيسة إلى الفلسفة المدرسية. يعرض أبرز أعلامه مثل القديس أوغسطين وتوما الأكويني وصلة الفلسفة بالدين."],["فن أن تكون دائمًا على صواب","الفلسفة والفكر","","نعم","b223.jpg","رسالة ساخرة لآرثر شوبنهاور تعرض حيل الجدال والمناظرة التي يلجأ إليها الناس لإفحام خصومهم. تفيد في كشف المغالطات والرد عليها."],["الأخلاق","الفلسفة والفكر","","نعم","b224.jpg",""],["سخط الحضارة","الفلسفة والفكر","","نعم","b225.jpg","كتاب سيغموند فرويد (1930) عن الصراع بين غرائز الفرد وقيود المجتمع. يرى أن الحضارة تمنحنا الأمان لكنها تفرض علينا كبتًا يولّد القلق والشعور بالذنب."],["الإنسان المتمرد","الفلسفة والفكر","","نعم","b226.jpg","كتاب ألبير كامو (1951) الذي يتأمل معنى التمرد على الظلم والعبث في حياة الإنسان وتاريخه. يناقش حدود التمرد وعلاقته بالحرية والعنف."],["العلمانية الإسلامية","الفلسفة والفكر","","نعم","b227.jpg",""],["جلال الدين الرومي","الفلسفة والفكر","","نعم","b228.jpg",""],["جلال الدين الرومي فيه ما فيه","الفلسفة والفكر","","نعم","b229.jpg","مجالس وأحاديث لمولانا جلال الدين الرومي جُمعت عن حواراته مع مريديه. تتناول المحبة والروح وحقيقة الإنسان بأسلوب بسيط عميق."],["مسلكيات","الفلسفة والفكر","","نعم","b230.jpg",""],["تاريخ في الظل","التاريخ","","نعم","b231.jpg",""],["هتلر في الميزان","التاريخ","","نعم","b232.jpg",""],["بين الأساطير","التاريخ","","نعم","b110.jpg",""],["كنت طبيبًا لصدام","التاريخ","","نعم","b233.jpg","مذكرات الجراح العراقي علاء بشير الذي عمل طبيبًا خاصًا لصدام حسين. يروي ما رآه من قرب داخل دوائر الحكم، وكيف كانت حياة الرجل وحاشيته خلف الأبواب المغلقة."],["رفقًا بالقوارير","الدين","","نعم","",""],["الحواريون","الدين","","نعم","b234.jpg",""],["معجزات الذكر","الدين","","نعم","b235.jpg",""],["الله المستعان","الدين","","نعم","b236.jpg",""],["فاستجبنا له","الدين","","نعم","b237.jpg",""],["بك يا الله","الدين","","نعم","b238.jpg",""],["آية وحكاية","الدين","","نعم","b239.jpg",""],["أسرار الدعاء","الدين","","نعم","b240.jpg",""],["علمتني يا الله","الدين","","نعم","b241.jpg",""],["السجدة الأخيرة","الدين","","نعم","b242.jpg",""],["علمتني سورة يوسف","الدين","","نعم","b243.jpg",""],["عيسى ابن مريم","الدين","","نعم","b244.jpg",""],["يأت بها الله","الدين","","نعم","b245.jpg",""],["علمتني سورة البقرة","الدين","","نعم","b246.jpg",""],["لأنك الله الجزء ٢","الدين","","نعم","b247.jpg",""],["أنا يوسف","الدين","","نعم","b248.jpg",""],["رحلة يقين","الدين","","نعم","b249.jpg",""],["جمالية الدين","الدين","","نعم","b250.jpg",""],["إكسير الطمأنينة","الدين","","نعم","b251.jpg",""],["سورة الفاتحة","الدين","","نعم","b252.jpg",""],["علمني موسى","الدين","","نعم","b253.jpg",""],["رسالة يوسف","الدين","","نعم","b254.jpg",""],["على خطى إبراهيم","الدين","","نعم","b255.jpg",""],["إن ربي لطيف","الدين","","نعم","b256.jpg",""],["أهل الإنجيل","الدين","","نعم","b257.jpg",""],["سورة البقرة","الدين","","نعم","b246.jpg",""],["المشوق إلى القرآن","الدين","","نعم","b258.jpg",""],["لربما خيرة","الدين","","نعم","b259.jpg",""],["هكذا هزموا الوسواس","الدين","","نعم","b260.jpg",""],["إن الله معنا","الدين","","نعم","b261.jpg",""],["فكرة من كل آية","الدين","","نعم","b262.jpg",""],["الشفاء بالدعاء","الدين","","نعم","b263.jpg",""],["الله يحبك","الدين","","نعم","",""],["أفضل مسوق شبكي في العالم","المال والأعمال والاقتصاد","","نعم","b264.jpg",""],["التسويق 0.6","المال والأعمال والاقتصاد","","نعم","b265.jpg",""],["أسرار التسويق الرقمي","المال والأعمال والاقتصاد","","نعم","b266.jpg",""],["أغنى رجل في بابل","المال والأعمال والاقتصاد","","نعم","b267.jpg","كتاب جورج كلاسون (1926) يقدّم دروس المال والادخار عبر حكايات من بابل القديمة. يشرح قواعد بسيطة لبناء الثروة والحفاظ عليها."],["الأعمال في القرن الحادي والعشرين","المال والأعمال والاقتصاد","","نعم","b268.jpg","كتاب روبرت كيوساكي، مؤلف «الأب الغني والأب الفقير»، عن أعمال المستقبل. يشجّع على بناء مصدر دخل مستقل بدل الاعتماد على وظيفة واحدة، ويتناول التسويق الشبكي نموذجًا لذلك."],["عبقرية إدارة الأعمال","المال والأعمال والاقتصاد","","نعم","b269.jpg",""],["التفاوض: هات وخد","المال والأعمال والاقتصاد","","نعم","b270.jpg",""],["عقول قيادية بارعة","المال والأعمال والاقتصاد","","نعم","b028.jpg","ما الذي يجعل بعض الناس يقودون وغيرهم يتبعون؟ يتناول الكتاب القيادة وصفات القادة الناجحين، ويعرض أفكارًا لتطوير مهارات التأثير والإدارة واتخاذ القرار. مناسب لمن يتطلع إلى قيادة فريق أو مشروع."],["دليل السياسي الناجح","المال والأعمال والاقتصاد","","نعم","b271.jpg",""],["أمومتي صانعة جيل","التربية والتعليم واللغات","","نعم","b272.jpg",""],["الطفل الموهوب","التربية والتعليم واللغات","","نعم","b273.jpg","كتاب عن الأطفال الموهوبين: صفاتهم وطرق اكتشاف موهبتهم ورعايتها. يقدّم إرشادات للأهل والمعلمين لتنمية قدراتهم ومعالجة مشكلاتهم."],["طفل المخ الكامل","التربية والتعليم واللغات","","نعم","b274.jpg","كتاب دانيال سيجل وتينا بيسون عن نمو دماغ الطفل. يقدّم استراتيجيات بسيطة لمساعدة الصغار على تهدئة انفعالاتهم والتفكير السليم، وتحويل لحظات الغضب إلى فرص للتعلم."],["قواعد التربية الثلاثون","التربية والتعليم واللغات","","نعم","b275.jpg",""],["50 وسيلة حتى يحب طفلك القراءة","التربية والتعليم واللغات","","نعم","b276.jpg",""],["30 طريقة حتى يتفوق طفلك في الدراسة","التربية والتعليم واللغات","","نعم","b277.jpg",""],["دليل لصناعة الطفل الذكي","التربية والتعليم واللغات","","نعم","b278.jpg",""],["كيف يرتب طفلك غرفته","التربية والتعليم واللغات","","نعم","",""],["طفلك المعاق","التربية والتعليم واللغات","","نعم","b279.jpg",""],["اصنعي لعبة لطفلك","التربية والتعليم واللغات","","نعم","b280.jpg",""],["25 وسيلة حتى يحب طفلك المدرسة","التربية والتعليم واللغات","","نعم","",""],["الطفولة والأمومة","التربية والتعليم واللغات","","نعم","b281.jpg",""],["كيف تتمتعين بحملك","التربية والتعليم واللغات","","نعم","b282.jpg","دليل للمرأة الحامل يشرح مراحل الحمل ونصائح التغذية والراحة والاستعداد للولادة. يساعدها على قضاء هذه الفترة بطمأنينة وثقة."],["النحو الميسر","التربية والتعليم واللغات","","نعم","",""],["موضوع التعبير باللغة العربية","التربية والتعليم واللغات","","نعم","b283.jpg",""],["تصريف الأفعال في اللغة الإنجليزية","التربية والتعليم واللغات","","نعم","b284.jpg",""],["الإنجليزية السهلة","التربية والتعليم واللغات","","نعم","b285.jpg",""],["القراءة والكتابة بالإنجليزية","التربية والتعليم واللغات","","نعم","",""],["المحادثة اليومية للغة الإنجليزية","التربية والتعليم واللغات","","نعم","b286.jpg",""],["الإنجليزية في حياتنا اليومية","التربية والتعليم واللغات","","نعم","b287.jpg",""],["الأزمنة في اللغة الإنجليزية","التربية والتعليم واللغات","","نعم","b288.jpg",""],["كيف تكتب موضوع تعبير باللغة الإنجليزية","التربية والتعليم واللغات","","نعم","b289.jpg",""],["مجموعة قصص إنجليزية","التربية والتعليم واللغات","","نعم","",""],["س و ج في الجغرافيا","التربية والتعليم واللغات","","نعم","",""],["س و ج في التاريخ","التربية والتعليم واللغات","","نعم","",""],["س و ج في العلوم","التربية والتعليم واللغات","","نعم","",""],["س و ج في المخترعين والمكتشفين","التربية والتعليم واللغات","","نعم","",""],["س و ج في المعلومات العامة","التربية والتعليم واللغات","","نعم","",""],["ادرس بذكاء وليس بجهد","التربية والتعليم واللغات","","نعم","b290.jpg","كتاب عن أساليب المذاكرة الذكية: تنظيم الوقت وتنشيط الذاكرة وتركيز الانتباه. يدعو إلى دراسة أقل جهدًا وأعلى فائدة."],["قراءتي — الصف الأول","التربية والتعليم واللغات","","نعم","b291.jpg",""],["قراءتي — الصف الثاني","التربية والتعليم واللغات","","نعم","b292.jpg",""],["قراءتي — الصف الثالث","التربية والتعليم واللغات","","نعم","b293.jpg",""],["الإنجليزية بسهولة","التربية والتعليم واللغات","","نعم","b294.jpg",""],["التعليم وعملياته الأساسية","التربية والتعليم واللغات","","نعم","b295.jpg",""],["الكاتالوج النفسي للطفل","التربية والتعليم واللغات","","نعم","b296.jpg",""],["أليس في بلاد العجائب","كتب الأطفال واليافعين","","نعم","b297.jpg","قصة لويس كارول (1865) عن فتاة تسقط في جحر أرنب فتجد عالمًا غريبًا من الشخصيات العجيبة والمنطق المقلوب. عمل خيالي طريف محبوب لدى الصغار والكبار."],["الجميلة النائمة","كتب الأطفال واليافعين","","نعم","b298.jpg","حكاية خرافية كلاسيكية عن أميرة تصيبها لعنة النوم الطويل بعد وخزة مغزل، حتى يوقظها أمير شجاع. قصة عن الخير والشر والأمل."],["الديناصورات","كتب الأطفال واليافعين","","نعم","","كتاب مصوّر للأطفال يعرّفهم بالديناصورات وأنواعها وأحجامها وغذائها. يحكي كيف عاشت على الأرض قبل ملايين السنين وما سبب انقراضها."],["كتاب الأدغال","كتب الأطفال واليافعين","","نعم","b299.jpg","حكايات روديارد كيبلنغ عن موغلي، الطفل الذي تربّيه الذئاب في غابات الهند ويتعلم قانون الأدغال من الدب بالو والنمر الأسود باغيرا. يواجه النمر شيرخان."],["جزيرة الكنز","كتب الأطفال واليافعين","","نعم","b300.jpg","رواية روبرت لويس ستيفنسون عن الفتى جيم هوكينز الذي يعثر على خريطة كنز ويبحر مع طاقم فيه القرصان جون سيلفر. مغامرة مشوقة في البحر والجزر."],["بقول لكم قصة ١","كتب الأطفال واليافعين","","نعم","b301.jpg",""],["بقول لكم قصة ٢","كتب الأطفال واليافعين","","نعم","b302.jpg",""],["مادلين","كتب الأطفال واليافعين","","نعم","","قصة مصوّرة للأطفال من تأليف لودفيغ بيملمانز عن مادلين، أصغر بنات مدرسة داخلية في باريس تعيش في رعاية الآنسة كلافيل. فتاة شجاعة لا تهاب شيئًا، وتحكي مغامرة طريفة عن الجرأة والصداقة."],["تحريات كلب","كتب الأطفال واليافعين","","نعم","b303.jpg",""],["أوليفيا","كتب الأطفال واليافعين","","نعم","","قصة مصوّرة للأطفال من تأليف إيان فالكونر عن أوليفيا، الخنزيرة الصغيرة النشيطة كثيرة الخيال. تملأ يومها بالمرح والمقالب والأحلام، وتتعثر في أحيان كثيرة فتُضحك القارئ."],["أنا وأوغي","كتب الأطفال واليافعين","","نعم","b183.jpg",""],["صاحب الظل الطويل","كتب الأطفال واليافعين","","نعم","b144.jpg","رواية جين ويبستر مكتوبة بالرسائل، تكتبها جودي أبوت اليتيمة إلى متبرع مجهول يموّل دراستها الجامعية. حكاية مرحة دافئة عن الصداقة والنضج."],["أرسين لوبين","كتب الأطفال واليافعين","","نعم","","مغامرات اللص الظريف أرسين لوبين التي ابتكرها الفرنسي موريس لوبلان. يسرق الأثرياء بدهاء وتنكّر وأناقة، ويدخل في مواجهات ذكية مع الشرطة ومع المحقق الشهير."],["مغامرات شرلوك هولمز","كتب الأطفال واليافعين","","نعم","b201.jpg","قصص آرثر كونان دويل عن المحقق الشهير شرلوك هولمز وصديقه الدكتور واطسون. يحل الألغاز بالملاحظة الدقيقة والاستنتاج المنطقي."],["101 قصة مدهشة","كتب الأطفال واليافعين","","نعم","b304.jpg",""],["101 قصة مشوقة","كتب الأطفال واليافعين","","نعم","b305.jpg",""],["حكايات قبل النوم","كتب الأطفال واليافعين","","نعم","",""],["الشفاء بالثوم والبصل","الصحة والطب","","نعم","","كتاب عن استخدامات الثوم والبصل في الغذاء والطب الشعبي. يعرض فوائدهما المتداولة وطرق تناولهما وتحضير وصفات منهما."],["الرجيم الكيميائي","الصحة والطب","","نعم","",""],["اليوجي","الصحة والطب","","نعم","",""],["كيف تتمتعين بحملك","الصحة والطب","","نعم","b282.jpg","دليل للمرأة الحامل يشرح مراحل الحمل ونصائح التغذية والراحة والاستعداد للولادة. يساعدها على قضاء هذه الفترة بطمأنينة وثقة."],["لماذا ننام","الصحة والطب","","نعم","b306.jpg","كتاب عالم الأعصاب ماثيو ووكر عن النوم وأثره في الذاكرة والمزاج والمناعة. يعرض أبحاثًا حديثة تبيّن كيف يهدد قلّة النوم الصحة الجسدية والنفسية."],["شرف المحاولة: معاركنا الصغيرة ضد الرقابة","السياسة والمجتمع","","نعم","b307.jpg",""],["استجواب الرئيس","السياسة والمجتمع","","نعم","b308.jpg",""],["العلمانية الإسلامية","السياسة والمجتمع","","نعم","b227.jpg",""],["دليل السياسي الناجح","السياسة والمجتمع","","نعم","b271.jpg",""],["ميسي","السير والمذكرات","","نعم","b309.jpg","سيرة النجم الأرجنتيني ليونيل ميسي منذ طفولته في مدينة روساريو. يحكي موهبته المبكرة وانتقاله فتىً إلى برشلونة، وكيف صار من أعظم لاعبي كرة القدم."],["رونالدو","السير والمذكرات","","نعم","b310.jpg","سيرة النجم البرتغالي كريستيانو رونالدو من طفولته المتواضعة في جزيرة ماديرا. يروي عزيمته وتدريباته الشاقة التي قادته إلى القمة في ملاعب كرة القدم."],["كنت طبيبًا لصدام","السير والمذكرات","","نعم","b233.jpg","مذكرات الجراح العراقي علاء بشير الذي عمل طبيبًا خاصًا لصدام حسين. يروي ما رآه من قرب داخل دوائر الحكم، وكيف كانت حياة الرجل وحاشيته خلف الأبواب المغلقة."],["ما تعرفه عني عظامي","السير والمذكرات","","نعم","b311.jpg",""],["هذا الكتاب سيؤلمك","السير والمذكرات","","نعم","b312.jpg","يوميات الطبيب البريطاني آدم كاي في سنوات عمله بالمستشفيات. يروي بسخرية لاذعة مواقف مضحكة ومؤلمة من حياة الأطباء المنهَكين وضغوط النظام الصحي."]];
+
+function parseCSV(t){
+  t=t.replace(/^\uFEFF/,''); const rows=[]; let r=[],f='',q=false;
+  for(let i=0;i<t.length;i++){ const c=t[i];
+    if(q){ if(c==='"'){ if(t[i+1]==='"'){f+='"';i++;} else q=false; } else f+=c; }
+    else if(c==='"') q=true;
+    else if(c===','){ r.push(f); f=''; }
+    else if(c==='\n'||c==='\r'){ if(c==='\r'&&t[i+1]==='\n') i++; r.push(f); f=''; rows.push(r); r=[]; }
+    else f+=c;
+  }
+  if(f!==''||r.length){ r.push(f); rows.push(r); }
+  return rows;
+}
+function toRows(table){
+  if(!table.length) return [];
+  const head=table[0].map(h=>h.trim()), names=['العنوان','التصنيف','السعر','متوفر','الغلاف','النبذة'];
+  const idx=names.map(n=>head.findIndex(h=>h.startsWith(n)));
+  if(idx[0]<0) return [];            // ليس جدول الكتب (مثلًا صفحة تسجيل دخول)
+  return table.slice(1).map(r=>idx.map(i=>i<0?'':(r[i]||'').trim())).filter(r=>r[0]);
+}
+const UNAVAILABLE=/^(لا|no|n|0|false|x|✗|نفد|نفدت|غير متوفر|غير متوفرة|منتهي)$/i;
+const PALETTE=['#0d9488','#e11d48','#7c3aed','#ca8a04','#0284c7','#16a34a'];
+
+function render(rows){
+  const main=document.getElementById('catalog'), toc=document.getElementById('toc');
+  main.innerHTML=''; toc.innerHTML=''; BOOK_INFO={};
+  const cats=new Map(); let extra=0;
+  rows.forEach(([title,cat,price,avail,cover,desc])=>{
+    if(UNAVAILABLE.test(avail.trim())) return;
+    cat=cat||'متنوعة';
+    let box=cats.get(cat);
+    if(!box){
+      const m=CAT_META[cat], id=m?m.id:'cat'+(++extra);
+      const sec=document.createElement('section'); sec.className='category '+(m?m.cls:''); sec.id=id;
+      sec.innerHTML='<div class="cat-head"><span class="dot"></span><h2></h2><span class="count">0</span></div><div class="books"></div>';
+      sec.querySelector('h2').textContent=cat;
+      if(!m) sec.querySelector('.dot').style.background=PALETTE[(extra-1)%PALETTE.length];
+      main.appendChild(sec); box=sec.querySelector('.books'); cats.set(cat,box);
+      const a=document.createElement('a'); a.href='#'+id; a.textContent=m?m.nav:cat; toc.appendChild(a);
+    }
+    const b=document.createElement('span'); b.className='book'; if(price) b.dataset.price=price;
+    const src=!cover?'':(/^(https?:|data:)/i.test(cover)?cover:IMAGES_DIR+cover);
+    if(src){
+      b.className='book has-cover'; b.title=title;
+      const img=document.createElement('img'); img.alt=title; img.loading='lazy'; img.src=src;
+      img.onerror=()=>{ b.className='book'; b.removeAttribute('title'); b.textContent=title; };
+      const em=document.createElement('em'); em.textContent=title; b.append(img,em);
+    } else b.textContent=title;
+    box.appendChild(b);
+    if(desc) BOOK_INFO[title]=desc;
+  });
+}
+async function startStore(){
+  let rows=null;
+  if(SHEET_CSV_URL){
+    try{
+      const ctl=new AbortController(), to=setTimeout(()=>ctl.abort(),8000);
+      const r=await fetch(SHEET_CSV_URL,{signal:ctl.signal}); clearTimeout(to);
+      if(!r.ok) throw new Error('http '+r.status);
+      const txt=await r.text(); rows=toRows(parseCSV(txt)); if(!rows.length) throw new Error('bad sheet');
+      try{ localStorage.setItem('sheetCache',txt); }catch(e){}
+    }catch(e){
+      rows=null;
+      try{ const c=localStorage.getItem('sheetCache'); if(c){ rows=toRows(parseCSV(c)); if(!rows.length) rows=null; } }catch(_){}
+    }
+  }
+  render(rows||FALLBACK_ROWS);
+  initStore();
+  const h=location.hash.slice(1); if(h&&h!=='cart'){ const el=document.getElementById(h); if(el) el.scrollIntoView(); }
+}
+startStore();
+
+</script>
+
+</body>
+</html>
